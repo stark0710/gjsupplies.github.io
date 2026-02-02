@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* GJ Supplies Design System - Industrial Professional Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
+
+@layer base {
+  :root {
+    /* Primary - Dark Navy Blue */
+    --primary: 217 71% 18%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Background & Foreground */
+    --background: 0 0% 100%;
+    --foreground: 217 33% 17%;
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 217 33% 17%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 217 33% 17%;
+
+    /* Secondary - Light Grey */
+    --secondary: 210 14% 96%;
+    --secondary-foreground: 217 33% 17%;
+
+    /* Muted */
+    --muted: 210 14% 96%;
+    --muted-foreground: 215 14% 45%;
+
+    /* Accent - Navy Blue Accent */
+    --accent: 217 71% 18%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border & Input */
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 217 71% 18%;
+
+    --radius: 0.5rem;
+
+    /* WhatsApp Green */
+    --whatsapp: 142 70% 45%;
+    --whatsapp-foreground: 0 0% 100%;
+
+    /* Success */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning */
+    --warning: 45 93% 47%;
+    --warning-foreground: 0 0% 0%;
+
+    /* Sidebar */
+    --sidebar-background: 217 71% 18%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 217 71% 18%;
+    --sidebar-accent: 217 71% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 217 71% 25%;
+    --sidebar-ring: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 217 33% 10%;
+    --foreground: 210 14% 96%;
+
+    --card: 217 33% 12%;
+    --card-foreground: 210 14% 96%;
+
+    --popover: 217 33% 12%;
+    --popover-foreground: 210 14% 96%;
+
+    --primary: 210 14% 96%;
+    --primary-foreground: 217 71% 18%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 14% 96%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 14% 65%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 14% 96%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 14% 96%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 212 27% 84%;
+
+    --sidebar-background: 217 33% 10%;
+    --sidebar-foreground: 210 14% 96%;
+    --sidebar-primary: 224 76% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 15%;
+    --sidebar-accent-foreground: 210 14% 96%;
+    --sidebar-border: 217 33% 15%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--secondary));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground));
+}
