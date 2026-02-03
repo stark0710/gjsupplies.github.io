@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Methods | GJ Supplies</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+            <nav class="nav-links">
+                <a href="profile.html">My Account</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 30px;">
+        <h1 class="section-title">Payment Methods</h1>
+        
+        <div class="profile-grid">
+            <div class="profile-sidebar">
+                <ul class="profile-menu">
+                    <li onclick="location.href='orders.html'">Your Orders</li>
+                    <li onclick="location.href='payment.html'" style="font-weight: bold;">Payment Methods</li>
+                    <li onclick="location.href='profile.html'">Login & Security</li>
+                </ul>
+            </div>
+            
+            <div class="profile-content">
+                <div style="background: #e7f4f9; border: 1px solid #bce2ef; padding: 15px; border-radius: 4px; color: #23527c; margin-bottom: 20px;">
+                    <i class="fa-solid fa-shield-halved"></i> 
+                    Payments are completed securely via WhatsApp or UPI. No card data is stored on this website.
+                </div>
+
+                <h3>Available Methods</h3>
+                
+                <div style="margin-top: 20px; display: grid; gap: 15px;">
+                    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                        <i class="fa-brands fa-google-pay fa-2x"></i>
+                        <div>
+                            <strong>UPI / QR Code</strong>
+                            <p style="font-size: 0.9rem; color: #666;">GPay, PhonePe, Paytm</p>
+                        </div>
+                    </div>
+
+                    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                        <i class="fa-solid fa-money-bill-wave fa-2x"></i>
+                        <div>
+                            <strong>Cash on Delivery</strong>
+                            <p style="font-size: 0.9rem; color: #666;">Available for orders under ₹2000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
