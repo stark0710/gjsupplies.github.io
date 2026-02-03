@@ -264,8 +264,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Show WhatsApp Alert (Simulated)
             alert(`Order Placed Successfully! Order ID: ${order.id}. Redirecting to orders...`);
-            window.location.href = 'orders.html';
+            window.location.href = 'payment.html';
+            <button id="confirmPaymentBtn">Confirm Payment</button>
         });
+    }
+
+    if (path.includes('payment.html')) {
+    const btn = document.getElementById('confirmPaymentBtn');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            alert('Payment method confirmed!');
+            window.location.href = 'orders.html';
+            });
+        }
     }
 
     if (path.includes('orders.html')) {
