@@ -264,8 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Show WhatsApp Alert (Simulated)
             alert(`Order Placed Successfully! Order ID: ${order.id}. Redirecting to orders...`);
-            window.location.href = 'payment.html';
-        
+            window.location.href = 'orders.html';
         });
     }
     if (path.includes('orders.html')) {
