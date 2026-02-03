@@ -5,109 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | GJ Supplies</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="main-header">
-        <div class="header-container">
+        <div class="container header-content">
             <a href="index.html" class="logo">GJ <span>Supplies</span></a>
-            <h2 style="color: white; font-size: 1.2rem; margin-left: 20px;">Checkout</h2>
+            <nav class="nav-links">
+                <span style="color: white; font-weight: 500;">Secure Checkout</span>
+            </nav>
         </div>
     </header>
 
-    <div class="container" style="margin-top: 30px;">
-        <div class="cart-container"> <!-- Reuse grid layout -->
-            <div style="background: white; padding: 20px; border-radius: 8px;">
-                <h3 class="section-title">Shipping Address</h3>
-                <form id="checkout-form">
+    <main class="container">
+        <div class="cart-container">
+            <div class="auth-form" style="margin: 0; max-width: 100%;">
+                <h2 class="section-title">Delivery Address</h2>
+                <form id="checkoutForm">
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" id="name" required>
+                        <input type="text" id="c_name" required>
                     </div>
                     <div class="form-group">
                         <label>Phone Number</label>
-                        <input type="tel" id="phone" required>
+                        <input type="tel" id="c_phone" required pattern="[0-9]{10}">
                     </div>
                     <div class="form-group">
-                        <label>Address Line 1</label>
-                        <input type="text" id="address" required>
+                        <label>Email (Optional)</label>
+                        <input type="email" id="c_email">
                     </div>
                     <div class="form-group">
-                        <label>City</label>
-                        <input type="text" id="city" required>
+                        <label>Address</label>
+                        <textarea id="c_address" rows="3" required></textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Pincode</label>
-                        <input type="text" id="pincode" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Payment Method</label>
-                        <select id="payment" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                            <option value="upi">UPI (GPay/PhonePe)</option>
-                            <option value="cod">Cash on Delivery</option>
-                        </select>
-                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">CONFIRM & ORDER</button>
                 </form>
             </div>
 
-            <div class="cart-summary">
-                <h3>Order Summary</h3>
-                <div class="summary-row">
-                    <span>Items</span>
-                    <span id="summary-count">0</span>
+            <div class="price-details">
+                <h3 style="color: #878787; margin-bottom: 16px;">Order Summary</h3>
+                <div class="price-row total" style="border: none;">
+                    <span>Total Payable</span>
+                    <span id="checkoutTotal">₹0</span>
                 </div>
-                <div class="summary-row total-row">
-                    <span>Order Total</span>
-                    <span id="summary-total">₹0</span>
+                <div style="margin-top: 16px; font-size: 12px; color: #666;">
+                    By placing the order, you agree to GJ Supplies' Terms of Use and Privacy Policy.
                 </div>
-                <button class="checkout-btn" onclick="placeOrder()">Place Order</button>
             </div>
         </div>
-    </div>
-
+    </main>
     <script src="js/main.js"></script>
-    <script>
-        const user = State.getUser();
-        if (!user) {
-            window.location.href = 'login.html';
-        } else {
-            document.getElementById('name').value = user.name;
-            document.getElementById('phone').value = user.phone || '';
-        }
-
-        const cart = State.getCart();
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-        document.getElementById('summary-count').textContent = count;
-        document.getElementById('summary-total').textContent = UI.formatPrice(total);
-
-        function placeOrder() {
-            const form = document.getElementById('checkout-form');
-            if (!form.checkValidity()) {
-                alert('Please fill all fields');
-                return;
-            }
-
-            const order = {
-                id: 'ORD-' + Date.now(),
-                date: new Date().toLocaleDateString(),
-                items: cart,
-                total: total,
-                status: 'Placed',
-                address: document.getElementById('address').value,
-                payment: document.getElementById('payment').value
-            };
-
-            State.addOrder(order);
-            State.setCart([]); // Clear cart
-            
-            // WhatsApp Message
-            const message = `New Order ${order.id}%0AAmount: ${total}%0APayment: ${order.payment}`;
-            alert(`Order Placed Successfully! \nWait for WhatsApp confirmation.`);
-            
-            window.location.href = 'orders.html';
-        }
-    </script>
 </body>
 </html>
