@@ -1,28 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GJ Supplies - Quality Industrial & General Supplies</title>
-    <meta name="description" content="GJ Supplies - Your trusted partner for quality industrial and general supplies. Tools, electrical, mechanical parts, safety items, and consumables. Pan-India delivery." />
-    <meta name="author" content="GJ Supplies" />
-    <meta name="keywords" content="industrial supplies, tools, electrical supplies, mechanical parts, safety equipment, bulk supplies, India" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GJ Supplies | Electronics & Robotics Store</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-microchip"></i>
+                GJ <span>Supplies</span>
+            </a>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search for components, kits...">
+                <button><i class="fa-solid fa-search"></i></button>
+            </div>
 
-    <meta property="og:title" content="GJ Supplies - Quality Industrial & General Supplies" />
-    <meta property="og:description" content="Your trusted partner for quality industrial and general supplies. Tools, electrical, mechanical parts, safety items, and consumables." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=1200&h=630&fit=crop" />
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                
+                <div id="user-section">
+                    <!-- JS will populate this -->
+                    <a href="login.html">Login / Signup</a>
+                </div>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="GJ Supplies - Quality Industrial & General Supplies" />
-    <meta name="twitter:description" content="Your trusted partner for quality industrial and general supplies." />
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=1200&h=630&fit=crop" />
+                <a href="cart.html" class="cart-icon">
+                    <i class="fa-solid fa-cart-shopping fa-lg"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
 
-    <link rel="canonical" href="https://gjsupplies.in" />
-  </head>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Reliable Electronics & Robotics Components</h1>
+            <p>For Students, Hobbyists & Engineers</p>
+            <a href="products.html" class="cta-button">Shop Now</a>
+        </div>
+    </section>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <!-- Categories -->
+    <section class="container">
+        <h2 class="section-title">Shop by Category</h2>
+        <div class="category-grid">
+            <div class="category-card" onclick="location.href='products.html?category=Microcontrollers'">
+                <img src="assets/images/cat-micro.jpg" alt="Microcontrollers">
+                <h3>Microcontrollers</h3>
+            </div>
+            <div class="category-card" onclick="location.href='products.html?category=Sensors'">
+                <img src="assets/images/cat-sensors.jpg" alt="Sensors">
+                <h3>Sensors</h3>
+            </div>
+            <div class="category-card" onclick="location.href='products.html?category=Drone Parts'">
+                <img src="assets/images/cat-drone.jpg" alt="Drone Parts">
+                <h3>Drone Parts</h3>
+            </div>
+            <div class="category-card" onclick="location.href='products.html?category=Motors'">
+                <img src="assets/images/cat-drone.jpg" alt="Motors">
+                <h3>Motors</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="product-grid" id="featured-products">
+            <!-- JS will populate -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>GJ Supplies</h4>
+                <p>Your one-stop shop for all electronics and robotics needs. Quality components at student-friendly prices.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="products.html">All Products</a></li>
+                    <li><a href="cart.html">My Cart</a></li>
+                    <li><a href="orders.html">Track Order</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><i class="fa-brands fa-whatsapp"></i> +91 98765 43210</li>
+                    <li><i class="fa-solid fa-envelope"></i> support@gjsupplies.in</li>
+                    <li><i class="fa-solid fa-location-dot"></i> Mumbai, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 GJ Supplies. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Populate Featured Products
+        const featuredContainer = document.getElementById('featured-products');
+        const featuredProducts = PRODUCTS.slice(0, 4);
+        
+        featuredProducts.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <a href="product.html?id=${product.id}">
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3 class="product-title">${product.name}</h3>
+                </a>
+                <div class="product-price">${UI.formatPrice(product.price)}</div>
+                <div class="product-actions">
+                    <button class="btn-add-cart" onclick="Cart.add(${product.id})">Add to Cart</button>
+                    <button class="btn-like"><i class="fa-regular fa-heart"></i></button>
+                </div>
+            `;
+            featuredContainer.appendChild(card);
+        });
+    </script>
+</body>
 </html>
