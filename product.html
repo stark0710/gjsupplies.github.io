@@ -5,77 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details | GJ Supplies</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header class="main-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <i class="fa-solid fa-microchip"></i>
-                GJ <span>Supplies</span>
-            </a>
-            <div class="search-bar">
-                <input type="text" placeholder="Search...">
-                <button><i class="fa-solid fa-search"></i></button>
-            </div>
+        <div class="container header-content">
+            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+            <div class="search-bar"><input type="text" id="globalSearch" placeholder="Search..."></div>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="products.html">Products</a>
                 <a href="cart.html" class="cart-icon">
-                    <i class="fa-solid fa-cart-shopping fa-lg"></i>
-                    <span class="cart-count">0</span>
+                    <span>Cart</span>
+                    <div class="cart-count" id="cartCount">0</div>
                 </a>
+                <div id="authLink"></div>
             </nav>
         </div>
     </header>
 
-    <div class="container" style="margin-top: 30px;">
-        <div id="product-detail-view">
-            <!-- Populated by JS -->
+    <main class="container">
+        <a href="products.html" style="display: block; margin-bottom: 16px; color: #878787;">← Back to Products</a>
+        
+        <div class="product-detail">
+            <div class="gallery">
+                <img id="mainImage" class="gallery-main" src="" alt="Product Image">
+                <!-- Minimal gallery implementation for now -->
+            </div>
+            
+            <div class="info">
+                <h1 id="productTitle" style="font-size: 24px; margin-bottom: 12px;">Loading...</h1>
+                <div id="productPrice" class="product-price" style="font-size: 28px; margin-bottom: 24px;"></div>
+                
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 16px; margin-bottom: 8px;">Description</h3>
+                    <p id="productDesc" style="color: #666; line-height: 1.6;"></p>
+                </div>
+
+                <div class="product-actions">
+                    <button id="addToCartBtn" class="btn btn-primary" style="padding: 18px;">ADD TO CART</button>
+                    <button class="btn btn-secondary" style="padding: 18px;">BUY NOW</button>
+                </div>
+                
+                <div style="margin-top: 24px; color: #878787; font-size: 14px;">
+                    <p>✓ 7 Day Replacement Policy</p>
+                    <p>✓ Cash on Delivery available</p>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script src="js/main.js"></script>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = parseInt(urlParams.get('id'));
-        const product = PRODUCTS.find(p => p.id === productId);
-
-        const container = document.getElementById('product-detail-view');
-
-        if (product) {
-            document.title = `${product.name} | GJ Supplies`;
-            container.innerHTML = `
-                <div class="product-details-container">
-                    <div class="product-gallery">
-                        <img src="${product.image}" alt="${product.name}">
-                    </div>
-                    <div class="product-info">
-                        <h1>${product.name}</h1>
-                        <p style="color: #007600; font-size: 0.9rem; margin-bottom: 10px;">In Stock</p>
-                        <div class="price">${UI.formatPrice(product.price)}</div>
-                        
-                        <div class="buy-box">
-                            <button class="checkout-btn" onclick="Cart.add(${product.id}); window.location.href='cart.html'">Buy Now</button>
-                            <button class="btn-add-cart" style="width: 100%; margin-top: 10px; border-radius: 8px;" onclick="Cart.add(${product.id})">Add to Cart</button>
-                        </div>
-
-                        <div style="margin-top: 30px;">
-                            <h3>Description</h3>
-                            <p class="description">${product.description}</p>
-                            <ul>
-                                <li>High Quality Component</li>
-                                <li>Tested for Reliability</li>
-                                <li>Fast Shipping</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else {
-            container.innerHTML = `<h2>Product not found</h2><a href="products.html">Back to Products</a>`;
-        }
-    </script>
 </body>
 </html>
