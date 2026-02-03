@@ -269,24 +269,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (path.includes('orders.html')) {
-        const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
-        const container = document.getElementById('ordersList');
-        if (orders.length === 0) {
-            container.innerHTML = '<p>No orders found.</p>';
-        } else {
-            container.innerHTML = orders.reverse().map(order => `
-                <div class="card" style="padding: 16px; margin-bottom: 16px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
-                        <strong>${order.id}</strong>
-                        <span style="color:green">${order.status}</span>
+    const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+    const container = document.getElementById('ordersList');
+
+    if (!orders.length) {
+        container.innerHTML = '<p>No orders found.</p>';
+    } else {
+        container.innerHTML = orders.reverse().map(order => `
+            <div class="card" style="margin-bottom:24px;">
+                
+                <!-- Order Header -->
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                    <div>
+                        <strong>Order ID:</strong> ${order.id}<br>
+                        <span style="font-size:13px;color:#666;">${order.date}</span>
                     </div>
-                    <div style="color:#666; font-size:14px;">${order.date}</div>
-                    <div style="margin: 8px 0;">
-                        ${order.items.map(i => `${i.name} x${i.quantity}`).join(', ')}
+                    <div style="text-align:right;">
+                        <span style="color:green;font-weight:600">${order.status}</span><br>
+                        <span style="font-size:13px;">${order.paymentMethod}</span>
                     </div>
-                    <div style="font-weight:600">Total: ₹${order.total}</div>
                 </div>
-            `).join('');
-        }
+
+                <!-- Ordered Products -->
+                <div class="order-items">
+                    ${order.items.map(item => `
+                        <div class="order-item" style="display:flex; gap:12px; margin-bottom:12px;">
+                            <img 
+                                src="${item.image}" 
+                                alt="${item.name}" 
+                                style="width:70px;height:70px;object-fit:cover;border-radius:6px;"
+                            >
+                            <div>
+                                <div style="font-weight:600">${item.name}</div>
+                                <div style="font-size:14px;color:#555;">
+                                    Qty: ${item.quantity}
+                                </div>
+                                <div style="font-size:14px;">
+                                    ₹${item.price}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <!-- Order Total -->
+                <div style="border-top:1px solid #eee;padding-top:10px;margin-top:10px;">
+                    <strong>Total: ₹${order.total}</strong>
+                </div>
+
+            </div>
+        `).join('');
     }
+}
 });
