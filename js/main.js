@@ -208,6 +208,103 @@ const App = {
     }
 };
 
+downloadInvoice(orderId) {
+    const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+    const order = orders.find(o => o.id === orderId);
+    if (!order) {
+        alert('Order not found');
+        return;
+    }
+
+    const win = window.open('', '_blank');
+
+    win.document.write(`
+        <html>
+        <head>
+            <title>Invoice ${order.id}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 24px;
+                    color: #333;
+                }
+                h1 {
+                    margin-bottom: 4px;
+                }
+                .header {
+                    margin-bottom: 20px;
+                }
+                .box {
+                    margin-bottom: 16px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 12px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background: #f4f4f4;
+                }
+                .total {
+                    margin-top: 16px;
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>GJ Supplies</h1>
+                <div>Invoice ID: ${order.id}</div>
+                <div>Date: ${order.date}</div>
+            </div>
+
+            <div class="box">
+                <strong>Customer Details</strong><br>
+                ${order.customer.name}<br>
+                ${order.customer.phone}<br>
+                ${order.customer.address}
+            </div>
+
+            <div class="box">
+                <strong>Payment Method:</strong> ${order.paymentMethod || 'Not Selected'}<br>
+                <strong>Status:</strong> ${order.status}
+            </div>
+
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                </tr>
+                ${order.items.map(i => `
+                    <tr>
+                        <td>${i.name}</td>
+                        <td>${i.quantity}</td>
+                        <td>₹${i.price}</td>
+                    </tr>
+                `).join('')}
+            </table>
+
+            <div class="total">
+                Total Amount: ₹${order.total}
+            </div>
+
+            <script>
+                window.print();
+            </script>
+        </body>
+        </html>
+    `);
+
+    win.document.close();
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     App.init();
