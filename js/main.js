@@ -238,57 +238,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (path.includes('checkout.html')) {
-    const cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
-    const total = cart.reduce((a, i) => a + i.price * i.quantity, 0);
-
-    document.getElementById('checkoutTotal').textContent = `₹${total}`;
-
-    document.getElementById('checkoutForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const order = {
-            id: 'ORD' + Date.now(),
-            date: new Date().toLocaleString(),
-            items: cart,
-            total: total,
-            status: 'Pending Payment',
-            customer: {
-                name: c_name.value,
-                phone: c_phone.value,
-                address: c_address.value
+        const cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
+        const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        document.getElementById('checkoutTotal').textContent = `₹${total}`;
+        
+        document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const order = {
+                id: 'ORD' + Date.now(),
+                date: new Date().toLocaleDateString(),
+                items: cart,
+                total: total,
+                status: 'Placed',
+                customer: {
+                    name: document.getElementById('c_name').value,
+                    phone: document.getElementById('c_phone').value,
+                    address: document.getElementById('c_address').value
                 }
             };
-    
-            localStorage.setItem('gj_current_order', JSON.stringify(order));
-            localStorage.removeItem('gj_cart');
-    
-            window.location.href = 'payment.html';
-        });
-    }
-
-    if (path.includes('payment.html')) {
-    const btn = document.getElementById('confirmPaymentBtn');
-
-    if (btn) {
-        btn.addEventListener('click', () => {
-            const order = JSON.parse(localStorage.getItem('gj_current_order'));
-            if (!order) return;
-
-            const method = document.querySelector('input[name="payment"]:checked').value;
-            order.paymentMethod = method;
-            order.status = method === 'COD' ? 'Cash on Delivery' : 'Payment Initiated';
-
+            
             const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
             orders.push(order);
             localStorage.setItem('gj_orders', JSON.stringify(orders));
-            localStorage.removeItem('gj_current_order');
-
-            alert('Payment method confirmed!');
+            localStorage.removeItem('gj_cart');
+            
+            // Show WhatsApp Alert (Simulated)
+            alert(`Order Placed Successfully! Order ID: ${order.id}. Redirecting to orders...`);
             window.location.href = 'orders.html';
-            });
-        }
+        });
     }
-
 
     if (path.includes('orders.html')) {
         const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
