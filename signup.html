@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Account | GJ Supplies</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 30px;">
+        <h1 class="section-title">Your Account</h1>
+        
+        <div class="profile-grid">
+            <div class="profile-sidebar">
+                <ul class="profile-menu">
+                    <li onclick="location.href='orders.html'">Your Orders</li>
+                    <li onclick="location.href='payment.html'">Payment Methods</li>
+                    <li onclick="location.href='profile.html'" style="font-weight: bold;">Login & Security</li>
+                    <li onclick="location.href='cart.html'">Your Cart</li>
+                </ul>
+            </div>
+            
+            <div class="profile-content">
+                <h3>Profile Details</h3>
+                <div id="profile-info">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        const user = State.getUser();
+        if (!user) window.location.href = 'login.html';
+
+        const infoDiv = document.getElementById('profile-info');
+        infoDiv.innerHTML = `
+            <p><strong>Name:</strong> ${user.name}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Phone:</strong> ${user.phone}</p>
+            <br>
+            <button class="auth-btn" style="width: auto;">Edit Profile</button>
+        `;
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
