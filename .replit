@@ -17,7 +17,7 @@ deploymentTarget = "static"
 build = ["npm", "run", "build"]
 publicDir = "dist/public"
 
-[workflows]
+[workflows] 
 runButton = "Project"
 
 [[workflows.workflow]]
