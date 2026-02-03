@@ -1,56 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Methods | GJ Supplies</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Payment | GJ Supplies</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="main-header">
-        <div class="container header-content">
-            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <div id="authLink"></div>
-            </nav>
-        </div>
-    </header>
 
-    <main class="container">
-        <div class="profile-layout">
-            <div class="sidebar-nav">
-                <a href="orders.html">My Orders</a>
-                <a href="profile.html">Account Settings</a>
-                <a href="payment.html" class="active">Payments</a>
-            </div>
+<header class="main-header">
+  <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+</header>
 
-            <div class="card" style="padding: 24px;">
-                <h2 class="section-title">Saved Payment Methods</h2>
-                
-                <div style="background: #fff3cd; color: #856404; padding: 12px; border-radius: 4px; margin-bottom: 24px;">
-                    <strong>Security Notice:</strong> No card or UPI details are stored on this website. All payments are processed securely via third-party gateways.
-                </div>
+<main class="container">
+  <h2>Select Payment Method</h2>
 
-                <div class="mb-2">
-                    <h3>Available Methods</h3>
-                    <ul style="margin-top: 16px;">
-                        <li style="padding: 16px; border: 1px solid #eee; margin-bottom: 8px; display: flex; align-items: center;">
-                            <img src="assets/icons/card-icon.png" onerror="this.style.display='none'" style="width: 24px; margin-right: 12px;">
-                            <span>Credit / Debit Card (Visa, MasterCard, Rupay)</span>
-                        </li>
-                        <li style="padding: 16px; border: 1px solid #eee; margin-bottom: 8px;">
-                            <span>UPI (Google Pay, PhonePe, Paytm)</span>
-                        </li>
-                        <li style="padding: 16px; border: 1px solid #eee; margin-bottom: 8px;">
-                            <span>Cash on Delivery</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </main>
+  <div class="card">
+    <label>
+      <input type="radio" name="payment" value="UPI" checked>
+      UPI (Google Pay / PhonePe)
+    </label><br><br>
 
-    <script src="js/main.js"></script>
+    <label>
+      <input type="radio" name="payment" value="COD">
+      Cash on Delivery
+    </label><br><br>
+
+    <label>
+      <input type="radio" name="payment" value="CARD">
+      Debit / Credit Card (display only)
+    </label><br><br>
+
+    <p style="color:#666;font-size:14px;">
+      No card or UPI details are stored on this website.
+    </p>
+
+    <button id="confirmPaymentBtn" class="btn btn-primary">
+      Confirm Payment
+    </button>
+  </div>
+</main>
+
+<script src="js/main.js"></script>
 </body>
 </html>
