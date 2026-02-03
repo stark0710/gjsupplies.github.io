@@ -1,39 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders | GJ Supplies</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>My Orders | GJ Supplies</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="main-header">
-        <div class="container header-content">
-            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <div id="authLink"></div>
-            </nav>
-        </div>
-    </header>
 
-    <main class="container">
-        <div class="profile-layout">
-            <div class="sidebar-nav">
-                <a href="orders.html" class="active">My Orders</a>
-                <a href="profile.html">Account Settings</a>
-                <a href="payment.html">Payments</a>
-            </div>
+<header class="main-header">
+  <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+</header>
 
-            <div class="card" style="padding: 24px;">
-                <h2 class="section-title">Order History</h2>
-                <div id="ordersList">
-                    <!-- Populated by JS -->
-                </div>
-            </div>
-        </div>
-    </main>
+<main class="container">
+  <h2>My Orders</h2>
+  <div id="ordersList"></div>
+</main>
 
-    <script src="js/main.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
