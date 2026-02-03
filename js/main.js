@@ -267,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'orders.html';
         });
     }
+
     if (path.includes('orders.html')) {
         const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
         const container = document.getElementById('ordersList');
