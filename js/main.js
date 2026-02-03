@@ -274,51 +274,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!orders.length) {
         container.innerHTML = '<p>No orders found.</p>';
-    } else {
-        container.innerHTML = orders.reverse().map(order => `
-            <div class="card" style="margin-bottom:24px;">
-                
-                <!-- Order Header -->
-                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                    <div>
-                        <strong>Order ID:</strong> ${order.id}<br>
-                        <span style="font-size:13px;color:#666;">${order.date}</span>
-                    </div>
-                    <div style="text-align:right;">
-                        <span style="color:green;font-weight:600">${order.status}</span><br>
-                        <span style="font-size:13px;">${order.paymentMethod}</span>
-                    </div>
-                </div>
-
-                <!-- Ordered Products -->
-                <div class="order-items">
-                    ${order.items.map(item => `
-                        <div class="order-item" style="display:flex; gap:12px; margin-bottom:12px;">
-                            <img 
-                                src="${item.image}" 
-                                alt="${item.name}" 
-                                style="width:70px;height:70px;object-fit:cover;border-radius:6px;"
-                            >
-                            <div>
-                                <div style="font-weight:600">${item.name}</div>
-                                <div style="font-size:14px;color:#555;">
-                                    Qty: ${item.quantity}
-                                </div>
-                                <div style="font-size:14px;">
-                                    ₹${item.price}
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <!-- Order Total -->
-                <div style="border-top:1px solid #eee;padding-top:10px;margin-top:10px;">
-                    <strong>Total: ₹${order.total}</strong>
-                </div>
-
-            </div>
-        `).join('');
+        return;
     }
+
+    container.innerHTML = orders.reverse().map(order => {
+        const statusIndex = {
+            'Placed': 1,
+            'Shipped': 2,
+            'Delivered': 3
+        }[order.status] || 1;
+
+        return `
+        <div class="card" style="margin-bottom:24px;">
+
+            <div style="display:flex;justify-content:space-between;">
+                <div>
+                    <strong>${order.id}</strong><br>
+                    <small>${order.date}</small>
+                </div>
+                <div>
+                    <strong>${order.status}</strong><br>
+                    <small>${order.paymentMethod}</small>
+                </div>
+            </div>
+
+            <!-- TIMELINE -->
+            <div class="order-timeline">
+                ${['Placed','Shipped','Delivered'].map((s,i)=>`
+                    <div class="timeline-step ${statusIndex >= i+1 ? 'active':''}">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-label">${s}</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <!-- PRODUCTS -->
+            ${order.items.map(item => `
+                <div style="display:flex;gap:12px;margin-bottom:10px;">
+                    <img src="${item.image}" style="width:70px;height:70px;border-radius:6px;object-fit:cover">
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        Qty: ${item.quantity}<br>
+                        ₹${item.price}
+                    </div>
+                </div>
+            `).join('')}
+
+            <div style="border-top:1px solid #eee;padding-top:10px;">
+                <strong>Total: ₹${order.total}</strong>
+            </div>
+
+            <button class="btn btn-secondary" onclick="App.downloadInvoice('${order.id}')">
+                Download Invoice
+            </button>
+        </div>`;
+    }).join('');
 }
 });
