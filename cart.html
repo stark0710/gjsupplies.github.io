@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | GJ Supplies</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+            <nav class="nav-links">
+                <a href="products.html">Continue Shopping</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 30px;">
+        <h1 class="section-title">Shopping Cart</h1>
+        
+        <div class="cart-container">
+            <div class="cart-items" id="cart-items-list">
+                <!-- JS Populated -->
+            </div>
+            
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total</span>
+                    <span id="cart-total">₹0</span>
+                </div>
+                <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Buy</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        function renderCartPage() {
+            const cart = State.getCart();
+            const container = document.getElementById('cart-items-list');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p>Your cart is empty.</p><a href="products.html" style="color: var(--secondary-color);">Browse Products</a>';
+                subtotalEl.textContent = '₹0';
+                totalEl.textContent = '₹0';
+                return;
+            }
+
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                const row = document.createElement('div');
+                row.className = 'cart-item';
+                row.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div style="flex: 1;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 5px;">${item.name}</h3>
+                        <div style="color: #007600; font-size: 0.9rem;">In Stock</div>
+                        <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+                            <button onclick="Cart.updateQuantity(${item.id}, -1)" style="padding: 2px 8px;">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="Cart.updateQuantity(${item.id}, 1)" style="padding: 2px 8px;">+</button>
+                            <span style="color: #ccc;">|</span>
+                            <button onclick="Cart.remove(${item.id})" style="color: #007185; background:none; border:none; cursor:pointer;">Delete</button>
+                        </div>
+                    </div>
+                    <div style="font-weight: bold; font-size: 1.1rem;">
+                        ${UI.formatPrice(itemTotal)}
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            subtotalEl.textContent = UI.formatPrice(total);
+            totalEl.textContent = UI.formatPrice(total);
+        }
+
+        function proceedToCheckout() {
+            const cart = State.getCart();
+            if (cart.length === 0) {
+                alert('Cart is empty');
+                return;
+            }
+            const user = State.getUser();
+            if (!user) {
+                window.location.href = 'login.html?redirect=checkout.html';
+            } else {
+                window.location.href = 'checkout.html';
+            }
+        }
+
+        renderCartPage();
+    </script>
+</body>
+</html>
