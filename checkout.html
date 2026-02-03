@@ -1,37 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Checkout | GJ Supplies</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | GJ Supplies</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <header class="main-header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+            <nav class="nav-links">
+                <span style="color: white; font-weight: 500;">Secure Checkout</span>
+            </nav>
+        </div>
+    </header>
 
-<header class="main-header">
-  <a href="index.html" class="logo">GJ <span>Supplies</span></a>
-</header>
+    <main class="container">
+        <div class="cart-container">
+            <div class="auth-form" style="margin: 0; max-width: 100%;">
+                <h2 class="section-title">Delivery Address</h2>
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="c_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="c_phone" required pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label>Email (Optional)</label>
+                        <input type="email" id="c_email">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="c_address" rows="3" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">CONFIRM & ORDER</button>
+                </form>
+            </div>
 
-<main class="container">
-  <h2>Checkout</h2>
-
-  <form id="checkoutForm" class="card">
-    <label>Name</label>
-    <input type="text" id="c_name" required>
-
-    <label>Phone</label>
-    <input type="tel" id="c_phone" required>
-
-    <label>Address</label>
-    <textarea id="c_address" required></textarea>
-
-    <h3>Total: <span id="checkoutTotal">₹0</span></h3>
-
-    <button type="submit" class="btn btn-primary">
-      Place Order
-    </button>
-  </form>
-</main>
-
-<script src="js/main.js"></script>
+            <div class="price-details">
+                <h3 style="color: #878787; margin-bottom: 16px;">Order Summary</h3>
+                <div class="price-row total" style="border: none;">
+                    <span>Total Payable</span>
+                    <span id="checkoutTotal">₹0</span>
+                </div>
+                <div style="margin-top: 16px; font-size: 12px; color: #666;">
+                    By placing the order, you agree to GJ Supplies' Terms of Use and Privacy Policy.
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="js/main.js"></script>
 </body>
 </html>
