@@ -1,162 +1,3 @@
-// =======================
-// MOCK PRODUCT DATA
-// =======================
-const PRODUCTS = [
-    { id: 1, name: "Premium Storage Box Set (30L)", category: "Storage", price: 899, image: "assets/images/cat-storage.jpg", description: "Heavy duty plastic storage boxes with lids." },
-    { id: 2, name: "Ceramic Dinner Set (12 Pcs)", category: "Kitchen", price: 2499, image: "assets/images/cat-kitchen.jpg", description: "Elegant ceramic dinner set." },
-    { id: 3, name: "Smart Air Humidifier", category: "Electronics", price: 1299, image: "assets/images/cat-electronics.jpg", description: "Quiet ultrasonic humidifier." },
-    { id: 4, name: "All-Purpose Cleaning Kit", category: "Cleaning", price: 499, image: "assets/images/cat-cleaning.jpg", description: "Complete home cleaning kit." }
-];
-
-// =======================
-// APP OBJECT
-// =======================
-const App = {
-
-    init() {
-        this.updateHeader();
-        this.updateCartCount();
-    },
-
-    updateHeader() {
-        const user = JSON.parse(localStorage.getItem('gj_user'));
-        const auth = document.getElementById('authLink');
-        if (!auth) return;
-
-        auth.innerHTML = user
-            ? `<a href="profile.html">Hi, ${user.name}</a>`
-            : `<a href="login.html">Login</a>`;
-    },
-
-    updateCartCount() {
-        const cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
-        const badge = document.getElementById('cartCount');
-        if (badge) badge.textContent = cart.reduce((a, i) => a + i.quantity, 0);
-    },
-
-    addToCart(id) {
-        let cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
-        const product = PRODUCTS.find(p => p.id === id);
-        const existing = cart.find(i => i.id === id);
-
-        existing ? existing.quantity++ : cart.push({ ...product, quantity: 1 });
-        localStorage.setItem('gj_cart', JSON.stringify(cart));
-        this.updateCartCount();
-        alert("Added to cart");
-    },
-
-    // =======================
-    // STEP 4 – INVOICE
-    // =======================
-    downloadInvoice(orderId) {
-        const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
-        const order = orders.find(o => o.id === orderId);
-        if (!order) return alert("Order not found");
-
-        const w = window.open("", "_blank");
-        w.document.write(`
-            <html><head><title>Invoice</title>
-            <style>
-                body{font-family:Arial;padding:24px}
-                table{width:100%;border-collapse:collapse}
-                th,td{border:1px solid #ccc;padding:8px}
-                th{background:#f4f4f4}
-            </style></head>
-            <body>
-                <h2>GJ Supplies</h2>
-                <p>Order ID: ${order.id}<br>Date: ${order.date}</p>
-                <h3>Customer</h3>
-                <p>${order.customer.name}<br>${order.customer.phone}<br>${order.customer.address}</p>
-                <table>
-                    <tr><th>Product</th><th>Qty</th><th>Price</th></tr>
-                    ${order.items.map(i => `<tr><td>${i.name}</td><td>${i.quantity}</td><td>₹${i.price}</td></tr>`).join("")}
-                </table>
-                <h3>Total: ₹${order.total}</h3>
-                <script>window.print()</script>
-            </body></html>
-        `);
-        w.document.close();
-    }
-};
-
-// =======================
-// PAGE ROUTING
-// =======================
-document.addEventListener("DOMContentLoaded", () => {
-    App.init();
-    const path = location.pathname;
-
-    // ✅ STEP 2 – LOGIN LOGIC
-    if (path.includes("login.html")) {
-        document.getElementById("loginForm").addEventListener("submit", e => {
-            e.preventDefault();
-            const email = email.value.trim();
-            const password = password.value.trim();
-
-            const users = JSON.parse(localStorage.getItem("gj_users")) || [];
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (!user) return alert("Invalid email or password");
-
-            localStorage.setItem("gj_user", JSON.stringify(user));
-            location.href = "index.html";
-        });
-    }
-
-    // CART
-    if (path.includes("cart.html")) {
-        const cart = JSON.parse(localStorage.getItem("gj_cart")) || [];
-        document.getElementById("cartItems").innerHTML = cart.map(i => `
-            <div>
-                <img src="${i.image}" width="60">
-                ${i.name} x ${i.quantity}
-            </div>
-        `).join("");
-    }
-
-    // CHECKOUT
-    if (path.includes("checkout.html")) {
-        const cart = JSON.parse(localStorage.getItem("gj_cart")) || [];
-        const total = cart.reduce((a, i) => a + i.price * i.quantity, 0);
-        checkoutTotal.textContent = `₹${total}`;
-
-        checkoutForm.addEventListener("submit", e => {
-            e.preventDefault();
-            const order = {
-                id: "ORD" + Date.now(),
-                date: new Date().toLocaleString(),
-                items: cart,
-                total,
-                status: "Placed",
-                customer: {
-                    name: c_name.value,
-                    phone: c_phone.value,
-                    address: c_address.value
-                }
-            };
-
-            const orders = JSON.parse(localStorage.getItem("gj_orders")) || [];
-            orders.push(order);
-            localStorage.setItem("gj_orders", JSON.stringify(orders));
-            localStorage.removeItem("gj_cart");
-
-            location.href = "orders.html";
-        });
-    }
-
-    // ORDERS
-    if (path.includes("orders.html")) {
-        const orders = JSON.parse(localStorage.getItem("gj_orders")) || [];
-        ordersList.innerHTML = orders.map(o => `
-            <div class="card">
-                <strong>${o.id}</strong><br>
-                ${o.items.map(i => `<img src="${i.image}" width="50">`).join("")}
-                <p>Total: ₹${o.total}</p>
-                <button onclick="App.downloadInvoice('${o.id}')">Download Invoice</button>
-            </div>
-        `).join("");
-    }
-});
 // Mock Data
 const PRODUCTS = [
     {
@@ -367,103 +208,6 @@ const App = {
     }
 };
 
-downloadInvoice(orderId) {
-    const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
-    const order = orders.find(o => o.id === orderId);
-    if (!order) {
-        alert('Order not found');
-        return;
-    }
-
-    const win = window.open('', '_blank');
-
-    win.document.write(`
-        <html>
-        <head>
-            <title>Invoice ${order.id}</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    padding: 24px;
-                    color: #333;
-                }
-                h1 {
-                    margin-bottom: 4px;
-                }
-                .header {
-                    margin-bottom: 20px;
-                }
-                .box {
-                    margin-bottom: 16px;
-                }
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-top: 12px;
-                }
-                th, td {
-                    border: 1px solid #ddd;
-                    padding: 8px;
-                    text-align: left;
-                }
-                th {
-                    background: #f4f4f4;
-                }
-                .total {
-                    margin-top: 16px;
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>GJ Supplies</h1>
-                <div>Invoice ID: ${order.id}</div>
-                <div>Date: ${order.date}</div>
-            </div>
-
-            <div class="box">
-                <strong>Customer Details</strong><br>
-                ${order.customer.name}<br>
-                ${order.customer.phone}<br>
-                ${order.customer.address}
-            </div>
-
-            <div class="box">
-                <strong>Payment Method:</strong> ${order.paymentMethod || 'Not Selected'}<br>
-                <strong>Status:</strong> ${order.status}
-            </div>
-
-            <table>
-                <tr>
-                    <th>Product</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                </tr>
-                ${order.items.map(i => `
-                    <tr>
-                        <td>${i.name}</td>
-                        <td>${i.quantity}</td>
-                        <td>₹${i.price}</td>
-                    </tr>
-                `).join('')}
-            </table>
-
-            <div class="total">
-                Total Amount: ₹${order.total}
-            </div>
-
-            <script>
-                window.print();
-            </script>
-        </body>
-        </html>
-    `);
-
-    win.document.close();
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     App.init();
@@ -525,65 +269,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (path.includes('orders.html')) {
-    const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
-    const container = document.getElementById('ordersList');
-
-    if (!orders.length) {
-        container.innerHTML = '<p>No orders found.</p>';
-        return;
+        const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+        const container = document.getElementById('ordersList');
+        if (orders.length === 0) {
+            container.innerHTML = '<p>No orders found.</p>';
+        } else {
+            container.innerHTML = orders.reverse().map(order => `
+                <div class="card" style="padding: 16px; margin-bottom: 16px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                        <strong>${order.id}</strong>
+                        <span style="color:green">${order.status}</span>
+                    </div>
+                    <div style="color:#666; font-size:14px;">${order.date}</div>
+                    <div style="margin: 8px 0;">
+                        ${order.items.map(i => `${i.name} x${i.quantity}`).join(', ')}
+                    </div>
+                    <div style="font-weight:600">Total: ₹${order.total}</div>
+                </div>
+            `).join('');
+        }
     }
-
-    container.innerHTML = orders.reverse().map(order => {
-        const statusIndex = {
-            'Placed': 1,
-            'Shipped': 2,
-            'Delivered': 3
-        }[order.status] || 1;
-
-        return `
-        <div class="card" style="margin-bottom:24px;">
-
-            <div style="display:flex;justify-content:space-between;">
-                <div>
-                    <strong>${order.id}</strong><br>
-                    <small>${order.date}</small>
-                </div>
-                <div>
-                    <strong>${order.status}</strong><br>
-                    <small>${order.paymentMethod}</small>
-                </div>
-            </div>
-
-            <!-- TIMELINE -->
-            <div class="order-timeline">
-                ${['Placed','Shipped','Delivered'].map((s,i)=>`
-                    <div class="timeline-step ${statusIndex >= i+1 ? 'active':''}">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-label">${s}</div>
-                    </div>
-                `).join('')}
-            </div>
-
-            <!-- PRODUCTS -->
-            ${order.items.map(item => `
-                <div style="display:flex;gap:12px;margin-bottom:10px;">
-                    <img src="${item.image}" style="width:70px;height:70px;border-radius:6px;object-fit:cover">
-                    <div>
-                        <strong>${item.name}</strong><br>
-                        Qty: ${item.quantity}<br>
-                        ₹${item.price}
-                    </div>
-                </div>
-            `).join('')}
-
-            <div style="border-top:1px solid #eee;padding-top:10px;">
-                <strong>Total: ₹${order.total}</strong>
-            </div>
-
-            <button class="btn btn-secondary" onclick="App.downloadInvoice('${order.id}')">
-                Download Invoice
-            </button>
-        </div>`;
-    }).join('');
-}
 });
