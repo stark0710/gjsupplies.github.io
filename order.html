@@ -3,83 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Orders | GJ Supplies</title>
+    <title>My Orders | GJ Supplies</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="main-header">
-        <div class="header-container">
+        <div class="container header-content">
             <a href="index.html" class="logo">GJ <span>Supplies</span></a>
             <nav class="nav-links">
-                <a href="profile.html">My Account</a>
+                <a href="index.html">Home</a>
+                <div id="authLink"></div>
             </nav>
         </div>
     </header>
 
-    <div class="container" style="margin-top: 30px;">
-        <h1 class="section-title">Your Orders</h1>
-        
-        <div class="profile-grid">
-            <div class="profile-sidebar">
-                <ul class="profile-menu">
-                    <li onclick="location.href='orders.html'" style="font-weight: bold;">Your Orders</li>
-                    <li onclick="location.href='payment.html'">Payment Methods</li>
-                    <li onclick="location.href='profile.html'">Login & Security</li>
-                </ul>
+    <main class="container">
+        <div class="profile-layout">
+            <div class="sidebar-nav">
+                <a href="orders.html" class="active">My Orders</a>
+                <a href="profile.html">Account Settings</a>
+                <a href="payment.html">Payments</a>
             </div>
-            
-            <div class="profile-content" id="orders-list">
-                <!-- JS Populated -->
+
+            <div class="card" style="padding: 24px;">
+                <h2 class="section-title">Order History</h2>
+                <div id="ordersList">
+                    <!-- Populated by JS -->
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="js/main.js"></script>
-    <script>
-        const orders = State.getOrders();
-        const container = document.getElementById('orders-list');
-
-        if (orders.length === 0) {
-            container.innerHTML = '<p>No orders placed yet.</p>';
-        } else {
-            orders.forEach(order => {
-                const orderCard = document.createElement('div');
-                orderCard.style.border = '1px solid #ddd';
-                orderCard.style.borderRadius = '8px';
-                orderCard.style.padding = '15px';
-                orderCard.style.marginBottom = '20px';
-                
-                orderCard.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
-                        <div>
-                            <span style="font-size: 0.8rem; color: #555;">ORDER PLACED</span><br>
-                            <strong>${order.date}</strong>
-                        </div>
-                        <div>
-                            <span style="font-size: 0.8rem; color: #555;">TOTAL</span><br>
-                            <strong>${UI.formatPrice(order.total)}</strong>
-                        </div>
-                        <div>
-                            <span style="font-size: 0.8rem; color: #555;">ORDER # ${order.id}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 style="color: #067d62; margin-bottom: 10px;">${order.status}</h4>
-                        ${order.items.map(item => `
-                            <div style="display: flex; gap: 15px; margin-bottom: 10px;">
-                                <img src="${item.image}" style="width: 50px; height: 50px; object-fit: contain;">
-                                <div>
-                                    <a href="product.html?id=${item.id}" style="color: #007185; font-weight: 500;">${item.name}</a>
-                                    <p style="font-size: 0.9rem; color: #555;">Qty: ${item.quantity}</p>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(orderCard);
-            });
-        }
-    </script>
 </body>
 </html>
