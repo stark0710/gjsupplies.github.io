@@ -464,6 +464,49 @@ footer {
   font-size: 18px;
 }
 
+.order-timeline {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+  position: relative;
+}
+
+.order-timeline::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #ddd;
+  z-index: 0;
+}
+
+.timeline-step {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  width: 33%;
+}
+
+.timeline-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ccc;
+  margin: 0 auto 6px;
+}
+
+.timeline-step.active .timeline-dot {
+  background: #28a745;
+}
+
+.timeline-label {
+  font-size: 13px;
+  color: #555;
+}
+
+
 /* Forms */
 .auth-form {
   max-width: 400px;
