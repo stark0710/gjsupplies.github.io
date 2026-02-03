@@ -1,3 +1,162 @@
+// =======================
+// MOCK PRODUCT DATA
+// =======================
+const PRODUCTS = [
+    { id: 1, name: "Premium Storage Box Set (30L)", category: "Storage", price: 899, image: "assets/images/cat-storage.jpg", description: "Heavy duty plastic storage boxes with lids." },
+    { id: 2, name: "Ceramic Dinner Set (12 Pcs)", category: "Kitchen", price: 2499, image: "assets/images/cat-kitchen.jpg", description: "Elegant ceramic dinner set." },
+    { id: 3, name: "Smart Air Humidifier", category: "Electronics", price: 1299, image: "assets/images/cat-electronics.jpg", description: "Quiet ultrasonic humidifier." },
+    { id: 4, name: "All-Purpose Cleaning Kit", category: "Cleaning", price: 499, image: "assets/images/cat-cleaning.jpg", description: "Complete home cleaning kit." }
+];
+
+// =======================
+// APP OBJECT
+// =======================
+const App = {
+
+    init() {
+        this.updateHeader();
+        this.updateCartCount();
+    },
+
+    updateHeader() {
+        const user = JSON.parse(localStorage.getItem('gj_user'));
+        const auth = document.getElementById('authLink');
+        if (!auth) return;
+
+        auth.innerHTML = user
+            ? `<a href="profile.html">Hi, ${user.name}</a>`
+            : `<a href="login.html">Login</a>`;
+    },
+
+    updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
+        const badge = document.getElementById('cartCount');
+        if (badge) badge.textContent = cart.reduce((a, i) => a + i.quantity, 0);
+    },
+
+    addToCart(id) {
+        let cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
+        const product = PRODUCTS.find(p => p.id === id);
+        const existing = cart.find(i => i.id === id);
+
+        existing ? existing.quantity++ : cart.push({ ...product, quantity: 1 });
+        localStorage.setItem('gj_cart', JSON.stringify(cart));
+        this.updateCartCount();
+        alert("Added to cart");
+    },
+
+    // =======================
+    // STEP 4 – INVOICE
+    // =======================
+    downloadInvoice(orderId) {
+        const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+        const order = orders.find(o => o.id === orderId);
+        if (!order) return alert("Order not found");
+
+        const w = window.open("", "_blank");
+        w.document.write(`
+            <html><head><title>Invoice</title>
+            <style>
+                body{font-family:Arial;padding:24px}
+                table{width:100%;border-collapse:collapse}
+                th,td{border:1px solid #ccc;padding:8px}
+                th{background:#f4f4f4}
+            </style></head>
+            <body>
+                <h2>GJ Supplies</h2>
+                <p>Order ID: ${order.id}<br>Date: ${order.date}</p>
+                <h3>Customer</h3>
+                <p>${order.customer.name}<br>${order.customer.phone}<br>${order.customer.address}</p>
+                <table>
+                    <tr><th>Product</th><th>Qty</th><th>Price</th></tr>
+                    ${order.items.map(i => `<tr><td>${i.name}</td><td>${i.quantity}</td><td>₹${i.price}</td></tr>`).join("")}
+                </table>
+                <h3>Total: ₹${order.total}</h3>
+                <script>window.print()</script>
+            </body></html>
+        `);
+        w.document.close();
+    }
+};
+
+// =======================
+// PAGE ROUTING
+// =======================
+document.addEventListener("DOMContentLoaded", () => {
+    App.init();
+    const path = location.pathname;
+
+    // ✅ STEP 2 – LOGIN LOGIC
+    if (path.includes("login.html")) {
+        document.getElementById("loginForm").addEventListener("submit", e => {
+            e.preventDefault();
+            const email = email.value.trim();
+            const password = password.value.trim();
+
+            const users = JSON.parse(localStorage.getItem("gj_users")) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (!user) return alert("Invalid email or password");
+
+            localStorage.setItem("gj_user", JSON.stringify(user));
+            location.href = "index.html";
+        });
+    }
+
+    // CART
+    if (path.includes("cart.html")) {
+        const cart = JSON.parse(localStorage.getItem("gj_cart")) || [];
+        document.getElementById("cartItems").innerHTML = cart.map(i => `
+            <div>
+                <img src="${i.image}" width="60">
+                ${i.name} x ${i.quantity}
+            </div>
+        `).join("");
+    }
+
+    // CHECKOUT
+    if (path.includes("checkout.html")) {
+        const cart = JSON.parse(localStorage.getItem("gj_cart")) || [];
+        const total = cart.reduce((a, i) => a + i.price * i.quantity, 0);
+        checkoutTotal.textContent = `₹${total}`;
+
+        checkoutForm.addEventListener("submit", e => {
+            e.preventDefault();
+            const order = {
+                id: "ORD" + Date.now(),
+                date: new Date().toLocaleString(),
+                items: cart,
+                total,
+                status: "Placed",
+                customer: {
+                    name: c_name.value,
+                    phone: c_phone.value,
+                    address: c_address.value
+                }
+            };
+
+            const orders = JSON.parse(localStorage.getItem("gj_orders")) || [];
+            orders.push(order);
+            localStorage.setItem("gj_orders", JSON.stringify(orders));
+            localStorage.removeItem("gj_cart");
+
+            location.href = "orders.html";
+        });
+    }
+
+    // ORDERS
+    if (path.includes("orders.html")) {
+        const orders = JSON.parse(localStorage.getItem("gj_orders")) || [];
+        ordersList.innerHTML = orders.map(o => `
+            <div class="card">
+                <strong>${o.id}</strong><br>
+                ${o.items.map(i => `<img src="${i.image}" width="50">`).join("")}
+                <p>Total: ₹${o.total}</p>
+                <button onclick="App.downloadInvoice('${o.id}')">Download Invoice</button>
+            </div>
+        `).join("");
+    }
+});
 // Mock Data
 const PRODUCTS = [
     {
