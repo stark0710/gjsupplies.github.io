@@ -241,11 +241,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (form) {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
+                const loggedUser = JSON.parse(localStorage.getItem('gj_user'));
+                const inputEmail = document.getElementById('c_email').value;
+
                 const customer = {
                     name: document.getElementById('c_name').value,
                     phone: document.getElementById('c_phone').value,
                     address: document.getElementById('c_address').value,
-                    email: document.getElementById('c_email').value || (JSON.parse(localStorage.getItem('gj_user'))?.email || '')
+                    email: loggedUser?.email || inputEmail || ''
                 };
                 localStorage.setItem('gj_temp_checkout', JSON.stringify({ customer, items: cart, total }));
                 window.location.href = 'payment.html';
@@ -327,17 +330,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (container) {
             if (!user) {
-                container.innerHTML = '<p>Please <a href="login.html">Login</a> to view your orders.</p>';
+                container.innerHTML = '<p>Please <a href="login.html" style="color:var(--primary-color); font-weight:600;">Login</a> to view your orders.</p>';
                 return;
             }
 
             const myOrders = orders.filter(o => 
-                (o.customer.email && o.customer.email === user.email) || 
-                (o.customer.phone && o.customer.phone === user.phone)
+                (o.customer?.email && o.customer.email === user.email) || 
+                (o.customer?.phone && o.customer.phone === user.phone)
             );
 
             if (myOrders.length === 0) {
-                container.innerHTML = '<p>No orders found.</p>';
+                container.innerHTML = '<p>No orders found for your account. <a href="products.html" style="color:var(--primary-color)">Start Shopping</a></p>';
             } else {
                 container.innerHTML = myOrders.reverse().map(order => `
                     <div class="card" style="padding: 16px; margin-bottom: 16px;">
