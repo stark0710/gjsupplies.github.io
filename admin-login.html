@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | GJ Supplies</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="background-color: #172337;">
+    <div class="container" style="display: flex; justify-content: center; padding-top: 100px;">
+        <div class="card" style="width: 400px; padding: 32px;">
+            <h2 class="section-title">Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" id="adminEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; background-color: #172337;">Login as Admin</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const pass = document.getElementById('adminPassword').value;
+            if (email === 'mguru0707@gmail.com' && pass === 'gjsupplies') {
+                localStorage.setItem('gj_admin', 'true');
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                alert('Invalid Admin Credentials');
+            }
+        });
+    </script>
+</body>
+</html>
