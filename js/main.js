@@ -59,7 +59,6 @@ const App = {
     },
 
     bindEvents() {
-        // Global search
         const searchInput = document.getElementById('globalSearch');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
@@ -67,7 +66,6 @@ const App = {
                     this.filterProducts(e.target.value);
                 }
             });
-            
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     window.location.href = `products.html?search=${e.target.value}`;
@@ -79,12 +77,11 @@ const App = {
     updateHeader() {
         const user = JSON.parse(localStorage.getItem('gj_user'));
         const authLink = document.getElementById('authLink');
-        
         if (authLink) {
             if (user) {
                 authLink.innerHTML = `<a href="profile.html">Hi, ${user.name.split(' ')[0]}</a>`;
             } else {
-                authLink.innerHTML = `<a href="login.html" class="btn btn-white">Login</a>`;
+                authLink.innerHTML = `<a href="login.html">Login</a>`;
             }
         }
     },
@@ -99,35 +96,22 @@ const App = {
     addToCart(productId) {
         const product = PRODUCTS.find(p => p.id === parseInt(productId));
         if (!product) return;
-
         let cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
         const existing = cart.find(item => item.id === product.id);
-
-        if (existing) {
-            existing.quantity++;
-        } else {
-            cart.push({ ...product, quantity: 1 });
-        }
-
+        if (existing) { existing.quantity++; } else { cart.push({ ...product, quantity: 1 }); }
         localStorage.setItem('gj_cart', JSON.stringify(cart));
         this.updateCartCount();
         alert('Product added to cart!');
     },
 
-    // Page Specific Logic
     renderProducts(containerId, filter = null) {
         const container = document.getElementById(containerId);
         if (!container) return;
-
         let items = PRODUCTS;
         if (filter) {
             const term = filter.toLowerCase();
-            items = items.filter(p => 
-                p.name.toLowerCase().includes(term) || 
-                p.category.toLowerCase().includes(term)
-            );
+            items = items.filter(p => p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term));
         }
-
         container.innerHTML = items.map(product => `
             <div class="product-card">
                 <button class="like-btn" onclick="App.toggleLike(${product.id}, this)">♥</button>
@@ -143,26 +127,20 @@ const App = {
         `).join('');
     },
 
-    toggleLike(id, btn) {
-        btn.classList.toggle('active');
-        // Logic to save to wishlist in localStorage could go here
-    },
+    toggleLike(id, btn) { btn.classList.toggle('active'); },
 
     renderCart() {
         const container = document.getElementById('cartItems');
         const totalEl = document.getElementById('cartTotal');
         const finalEl = document.getElementById('cartFinal');
         if (!container) return;
-
         const cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
-        
         if (cart.length === 0) {
             container.innerHTML = '<div class="p-4 text-center">Your cart is empty. <a href="products.html" style="color:var(--primary-color)">Start Shopping</a></div>';
             if(totalEl) totalEl.textContent = '₹0';
             if(finalEl) finalEl.textContent = '₹0';
             return;
         }
-
         container.innerHTML = cart.map(item => `
             <div class="cart-item">
                 <img src="${item.image}" class="cart-item-img" alt="${item.name}">
@@ -178,7 +156,6 @@ const App = {
                 </div>
             </div>
         `).join('');
-
         const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
         if(totalEl) totalEl.textContent = `₹${total}`;
         if(finalEl) finalEl.textContent = `₹${total}`;
@@ -187,12 +164,9 @@ const App = {
     updateQty(id, change) {
         let cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
         const item = cart.find(i => i.id === id);
-        
         if (item) {
             item.quantity += change;
-            if (item.quantity < 1) {
-                cart = cart.filter(i => i.id !== id);
-            }
+            if (item.quantity < 1) cart = cart.filter(i => i.id !== id);
             localStorage.setItem('gj_cart', JSON.stringify(cart));
             this.renderCart();
             this.updateCartCount();
@@ -211,8 +185,6 @@ const App = {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     App.init();
-    
-    // Page routing checks
     const path = window.location.pathname;
     const searchParams = new URLSearchParams(window.location.search);
 
@@ -221,9 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         App.renderProducts('productsGrid', query);
     }
     
-    if (path.includes('cart.html')) {
-        App.renderCart();
-    }
+    if (path.includes('cart.html')) App.renderCart();
 
     if (path.includes('product.html')) {
         const id = searchParams.get('id');
@@ -240,53 +210,94 @@ document.addEventListener('DOMContentLoaded', () => {
     if (path.includes('checkout.html')) {
         const cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
         const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        document.getElementById('checkoutTotal').textContent = `₹${total}`;
+        if(document.getElementById('checkoutTotal')) document.getElementById('checkoutTotal').textContent = `₹${total}`;
         
-        document.getElementById('checkoutForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const order = {
-                id: 'ORD' + Date.now(),
-                date: new Date().toLocaleDateString(),
-                items: cart,
-                total: total,
-                status: 'Placed',
-                customer: {
+        const form = document.getElementById('checkoutForm');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const customer = {
                     name: document.getElementById('c_name').value,
                     phone: document.getElementById('c_phone').value,
                     address: document.getElementById('c_address').value
+                };
+                localStorage.setItem('gj_temp_checkout', JSON.stringify({ customer, items: cart, total }));
+                window.location.href = 'payment.html';
+            });
+        }
+    }
+
+    if (path.includes('payment.html')) {
+        const temp = JSON.parse(localStorage.getItem('gj_temp_checkout'));
+        if (!temp) window.location.href = 'cart.html';
+
+        const upiForm = document.getElementById('upiForm');
+        if (upiForm) {
+            upiForm.style.display = 'none';
+            document.querySelectorAll('input[name="payMethod"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    upiForm.style.display = e.target.value === 'UPI' ? 'block' : 'none';
+                });
+            });
+        }
+
+        const confirmBtn = document.getElementById('confirmOrderBtn');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => {
+                const method = document.querySelector('input[name="payMethod"]:checked').value;
+                const order = {
+                    id: 'ORD' + Date.now(),
+                    date: new Date().toLocaleDateString(),
+                    items: temp.items,
+                    total: temp.total,
+                    customer: temp.customer,
+                    paymentMethod: method,
+                    paymentStatus: method === 'COD' ? 'COD' : 'Pending',
+                    orderStatus: 'Placed'
+                };
+
+                if (method === 'UPI') {
+                    order.paymentRef = document.getElementById('upiRef').value;
+                    // File preview logic would go here (base64)
                 }
-            };
-            
-            const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
-            orders.push(order);
-            localStorage.setItem('gj_orders', JSON.stringify(orders));
-            localStorage.removeItem('gj_cart');
-            
-            // Show WhatsApp Alert (Simulated)
-            alert(`Order Placed Successfully! Order ID: ${order.id}. Redirecting to orders...`);
-            window.location.href = 'orders.html';
-        });
+
+                const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+                orders.push(order);
+                localStorage.setItem('gj_orders', JSON.stringify(orders));
+                localStorage.removeItem('gj_cart');
+                localStorage.removeItem('gj_temp_checkout');
+                alert('Order Placed! Redirecting...');
+                window.location.href = 'orders.html';
+            });
+        }
     }
 
     if (path.includes('orders.html')) {
         const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
         const container = document.getElementById('ordersList');
-        if (orders.length === 0) {
-            container.innerHTML = '<p>No orders found.</p>';
-        } else {
-            container.innerHTML = orders.reverse().map(order => `
-                <div class="card" style="padding: 16px; margin-bottom: 16px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
-                        <strong>${order.id}</strong>
-                        <span style="color:green">${order.status}</span>
+        if (container) {
+            if (orders.length === 0) {
+                container.innerHTML = '<p>No orders found.</p>';
+            } else {
+                container.innerHTML = orders.reverse().map(order => `
+                    <div class="card" style="padding: 16px; margin-bottom: 16px;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>${order.id}</strong>
+                            <span class="status-tag status-${order.paymentStatus.toLowerCase()}">${order.paymentStatus}</span>
+                        </div>
+                        <div style="margin: 10px 0;">${order.items.map(i => `${i.name} x${i.quantity}`).join(', ')}</div>
+                        <div class="timeline">
+                            <div class="timeline-item">Order Placed - ${order.date}</div>
+                            ${order.orderStatus !== 'Placed' ? `<div class="timeline-item">${order.orderStatus}</div>` : ''}
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong>Total: ₹${order.total}</strong>
+                            ${(order.paymentStatus === 'Verified' || order.paymentStatus === 'COD') ? 
+                                `<button class="btn btn-secondary" style="padding:4px 12px; font-size:12px;" onclick="alert('Downloading Invoice...')">Invoice</button>` : ''}
+                        </div>
                     </div>
-                    <div style="color:#666; font-size:14px;">${order.date}</div>
-                    <div style="margin: 8px 0;">
-                        ${order.items.map(i => `${i.name} x${i.quantity}`).join(', ')}
-                    </div>
-                    <div style="font-weight:600">Total: ₹${order.total}</div>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
     }
 });
