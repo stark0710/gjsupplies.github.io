@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | GJ Supplies</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        .admin-table th, .admin-table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        .admin-table th { background: #f4f4f4; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .img-preview { width: 50px; height: 50px; object-fit: cover; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="main-header" style="background: #172337;">
+        <div class="container header-content">
+            <span class="logo">GJ <span>Admin</span></span>
+            <button class="btn btn-secondary" onclick="localStorage.removeItem('gj_admin'); window.location.href='admin-login.html'">Logout</button>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 20px;">
+        <h1 class="section-title">Order Management</h1>
+        <div id="adminOrders">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Products</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminOrdersBody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script>
+        if (!localStorage.getItem('gj_admin')) window.location.href = 'admin-login.html';
+
+        function renderAdminOrders() {
+            const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+            const body = document.getElementById('adminOrdersBody');
+            body.innerHTML = orders.reverse().map((order, index) => `
+                <tr>
+                    <td>${order.id}<br><small>${order.date}</small></td>
+                    <td>${order.customer.name}<br>${order.customer.phone}<br><small>${order.customer.address}</small></td>
+                    <td>${order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}</td>
+                    <td>
+                        Method: ${order.paymentMethod}<br>
+                        Ref: ${order.paymentRef || 'N/A'}<br>
+                        Status: <span class="status-badge" style="background:${order.paymentStatus === 'Verified' ? '#d4edda' : '#fff3cd'}">${order.paymentStatus}</span>
+                        ${order.paymentProofImage ? `<br><img src="${order.paymentProofImage}" class="img-preview" onclick="window.open(this.src)">` : ''}
+                    </td>
+                    <td><span class="status-badge" style="background:#e2e3e5">${order.orderStatus}</span></td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            ${order.paymentStatus === 'Pending' ? `<button class="btn btn-primary" style="padding:4px; font-size:11px;" onclick="updateOrder(${orders.length - 1 - index}, 'paymentStatus', 'Verified')">Verify Payment</button>` : ''}
+                            <button class="btn btn-secondary" style="padding:4px; font-size:11px;" onclick="updateOrder(${orders.length - 1 - index}, 'orderStatus', 'Shipped')">Mark Shipped</button>
+                            <button class="btn btn-secondary" style="padding:4px; font-size:11px;" onclick="updateOrder(${orders.length - 1 - index}, 'orderStatus', 'Delivered')">Mark Delivered</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateOrder(index, field, value) {
+            const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+            orders[index][field] = value;
+            localStorage.setItem('gj_orders', JSON.stringify(orders));
+            renderAdminOrders();
+        }
+
+        renderAdminOrders();
+    </script>
+</body>
+</html>
