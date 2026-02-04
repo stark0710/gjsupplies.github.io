@@ -464,49 +464,6 @@ footer {
   font-size: 18px;
 }
 
-.order-timeline {
-  display: flex;
-  justify-content: space-between;
-  margin: 16px 0;
-  position: relative;
-}
-
-.order-timeline::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #ddd;
-  z-index: 0;
-}
-
-.timeline-step {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  width: 33%;
-}
-
-.timeline-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #ccc;
-  margin: 0 auto 6px;
-}
-
-.timeline-step.active .timeline-dot {
-  background: #28a745;
-}
-
-.timeline-label {
-  font-size: 13px;
-  color: #555;
-}
-
-
 /* Forms */
 .auth-form {
   max-width: 400px;
@@ -577,3 +534,13 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* Order Timeline & Status */
+.timeline { position: relative; padding: 20px 0; margin-left: 20px; border-left: 2px solid #eee; }
+.timeline-item { margin-bottom: 20px; padding-left: 20px; position: relative; }
+.timeline-item::before { content: ''; position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: #2874f0; border-radius: 50%; }
+.status-tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+.status-pending { background: #fff3cd; color: #856404; }
+.status-verified { background: #d4edda; color: #155724; }
+.status-shipped { background: #cce5ff; color: #004085; }
+.status-delivered { background: #d1ecf1; color: #0c5460; }
