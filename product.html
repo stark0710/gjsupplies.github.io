@@ -3,94 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | GJ Supplies</title>
+    <title>Product Details | GJ Supplies</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header class="main-header">
         <div class="container header-content">
             <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+            <div class="search-bar"><input type="text" id="globalSearch" placeholder="Search..."></div>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
-                <a href="#" onclick="logout()">Logout</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html" class="cart-icon">
+                    <span>Cart</span>
+                    <div class="cart-count" id="cartCount">0</div>
+                </a>
+                <div id="authLink"></div>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <div class="profile-layout">
-            <div class="sidebar-nav">
-                <div style="padding: 16px; border-bottom: 1px solid #f0f0f0;">
-                    <div style="font-size: 12px;">Hello,</div>
-                    <div style="font-weight: 600;" id="userName">User</div>
-                </div>
-                <a href="orders.html">My Orders</a>
-                <a href="profile.html" class="active">Account Settings</a>
-                <a href="#" onclick="logout()" style="color: red;">Logout</a>
+        <a href="products.html" style="display: block; margin-bottom: 16px; color: #878787;">← Back to Products</a>
+        
+        <div class="product-detail">
+            <div class="gallery">
+                <img id="mainImage" class="gallery-main" src="" alt="Product Image">
             </div>
+            
+            <div class="info">
+                <h1 id="productTitle" style="font-size: 24px; margin-bottom: 12px;">Loading...</h1>
+                <div id="productPrice" class="product-price" style="font-size: 28px; margin-bottom: 24px;"></div>
+                
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 16px; margin-bottom: 8px;">Description</h3>
+                    <p id="productDesc" style="color: #666; line-height: 1.6;"></p>
+                </div>
 
-            <div class="card" style="padding: 24px;">
-                <h2 class="section-title">Account Settings</h2>
-                <form id="profileEditForm">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="p_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="text" id="p_phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email Address (Read-only)</label>
-                        <input type="email" id="p_email" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>Delivery Address</label>
-                        <textarea id="p_address" rows="3" required placeholder="Enter your full address"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Settings</button>
-                </form>
+                <div class="product-actions">
+                    <button id="addToCartBtn" class="btn btn-primary" style="padding: 18px;">ADD TO CART</button>
+                    <button class="btn btn-secondary" style="padding: 18px;">BUY NOW</button>
+                </div>
+                
+                <div style="margin-top: 24px; color: #878787; font-size: 14px;">
+                    <p>✓ 7 Day Replacement Policy</p>
+                    <p>✓ Cash on Delivery available</p>
+                </div>
             </div>
         </div>
+
+        <section style="margin-top: 60px;">
+            <h2 class="section-title">Related Products</h2>
+            <div id="relatedProducts" class="products-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
     </main>
 
     <script src="js/main.js"></script>
-    <script>
-        const user = JSON.parse(localStorage.getItem('gj_user'));
-        if (!user) window.location.href = 'login.html';
-        
-        document.getElementById('userName').textContent = user.name;
-        document.getElementById('p_name').value = user.name;
-        document.getElementById('p_email').value = user.email;
-        document.getElementById('p_phone').value = user.phone || '';
-        document.getElementById('p_address').value = user.address || '';
-
-        document.getElementById('profileEditForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            user.name = document.getElementById('p_name').value;
-            user.phone = document.getElementById('p_phone').value;
-            user.address = document.getElementById('p_address').value;
-            
-            localStorage.setItem('gj_user', JSON.stringify(user));
-            
-            // Sync with gj_users list
-            const users = JSON.parse(localStorage.getItem('gj_users')) || [];
-            const idx = users.findIndex(u => u.email === user.email);
-            if(idx !== -1) {
-                users[idx] = user;
-            } else {
-                users.push(user);
-            }
-            localStorage.setItem('gj_users', JSON.stringify(users));
-            
-            alert('Profile updated successfully!');
-            location.reload();
-        });
-
-        function logout() {
-            localStorage.removeItem('gj_user');
-            window.location.href = 'index.html';
-        }
-    </script>
 </body>
 </html>
