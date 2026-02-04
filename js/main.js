@@ -179,6 +179,30 @@ const App = {
         localStorage.setItem('gj_cart', JSON.stringify(cart));
         this.renderCart();
         this.updateCartCount();
+    },
+
+    renderRelatedProducts(currentId, category) {
+        const container = document.getElementById('relatedProducts');
+        if (!container) return;
+
+        let related = PRODUCTS.filter(p => p.category === category && p.id !== parseInt(currentId));
+        if (related.length === 0) {
+            related = PRODUCTS.filter(p => p.id !== parseInt(currentId)).sort(() => 0.5 - Math.random()).slice(0, 4);
+        } else {
+            related = related.slice(0, 4);
+        }
+
+        container.innerHTML = related.map(product => `
+            <div class="product-card">
+                <a href="product.html?id=${product.id}">
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <div class="product-price">₹${product.price}</div>
+                    </div>
+                </a>
+            </div>
+        `).join('');
     }
 };
 
@@ -204,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('productDesc').textContent = product.description;
             document.getElementById('mainImage').src = product.image;
             document.getElementById('addToCartBtn').onclick = () => App.addToCart(product.id);
+            App.renderRelatedProducts(id, product.category);
         }
     }
     
@@ -219,7 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const customer = {
                     name: document.getElementById('c_name').value,
                     phone: document.getElementById('c_phone').value,
-                    address: document.getElementById('c_address').value
+                    address: document.getElementById('c_address').value,
+                    email: document.getElementById('c_email').value || (JSON.parse(localStorage.getItem('gj_user'))?.email || '')
                 };
                 localStorage.setItem('gj_temp_checkout', JSON.stringify({ customer, items: cart, total }));
                 window.location.href = 'payment.html';
@@ -232,19 +258,43 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!temp) window.location.href = 'cart.html';
 
         const upiForm = document.getElementById('upiForm');
+        const confirmBtn = document.getElementById('confirmOrderBtn');
+        const upiRefInput = document.getElementById('upiRef');
+        const upiProofInput = document.getElementById('upiProof');
+        const payRadios = document.querySelectorAll('input[name="payMethod"]');
+
+        const validatePayment = () => {
+            const method = document.querySelector('input[name="payMethod"]:checked').value;
+            if (method === 'COD') {
+                confirmBtn.disabled = false;
+            } else {
+                confirmBtn.disabled = !(upiRefInput.value.trim() !== '' && upiProofInput.files.length > 0);
+            }
+        };
+
         if (upiForm) {
             upiForm.style.display = 'none';
-            document.querySelectorAll('input[name="payMethod"]').forEach(radio => {
+            payRadios.forEach(radio => {
                 radio.addEventListener('change', (e) => {
                     upiForm.style.display = e.target.value === 'UPI' ? 'block' : 'none';
+                    validatePayment();
                 });
             });
         }
 
-        const confirmBtn = document.getElementById('confirmOrderBtn');
+        if (upiRefInput) upiRefInput.addEventListener('input', validatePayment);
+        if (upiProofInput) upiProofInput.addEventListener('change', validatePayment);
+
         if (confirmBtn) {
+            confirmBtn.disabled = true; // Default
             confirmBtn.addEventListener('click', () => {
                 const method = document.querySelector('input[name="payMethod"]:checked').value;
+                
+                if (method === 'UPI' && (upiRefInput.value.trim() === '' || upiProofInput.files.length === 0)) {
+                    alert('Please provide UPI Reference ID and Screenshot.');
+                    return;
+                }
+
                 const order = {
                     id: 'ORD' + Date.now(),
                     date: new Date().toLocaleDateString(),
@@ -253,13 +303,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     customer: temp.customer,
                     paymentMethod: method,
                     paymentStatus: method === 'COD' ? 'COD' : 'Pending',
-                    orderStatus: 'Placed'
+                    orderStatus: 'Placed',
+                    paymentRef: method === 'UPI' ? upiRefInput.value : null,
+                    paymentProofImage: null // Base64 would go here in a full app
                 };
-
-                if (method === 'UPI') {
-                    order.paymentRef = document.getElementById('upiRef').value;
-                    // File preview logic would go here (base64)
-                }
 
                 const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
                 orders.push(order);
@@ -269,28 +316,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Order Placed! Redirecting...');
                 window.location.href = 'orders.html';
             });
+            validatePayment(); // Initial check
         }
     }
 
     if (path.includes('orders.html')) {
+        const user = JSON.parse(localStorage.getItem('gj_user'));
         const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
         const container = document.getElementById('ordersList');
+        
         if (container) {
-            if (orders.length === 0) {
+            if (!user) {
+                container.innerHTML = '<p>Please <a href="login.html">Login</a> to view your orders.</p>';
+                return;
+            }
+
+            const myOrders = orders.filter(o => 
+                (o.customer.email && o.customer.email === user.email) || 
+                (o.customer.phone && o.customer.phone === user.phone)
+            );
+
+            if (myOrders.length === 0) {
                 container.innerHTML = '<p>No orders found.</p>';
             } else {
-                container.innerHTML = orders.reverse().map(order => `
+                container.innerHTML = myOrders.reverse().map(order => `
                     <div class="card" style="padding: 16px; margin-bottom: 16px;">
                         <div style="display:flex; justify-content:space-between;">
                             <strong>${order.id}</strong>
                             <span class="status-tag status-${order.paymentStatus.toLowerCase()}">${order.paymentStatus}</span>
                         </div>
-                        <div style="margin: 10px 0;">${order.items.map(i => `${i.name} x${i.quantity}`).join(', ')}</div>
-                        <div class="timeline">
-                            <div class="timeline-item">Order Placed - ${order.date}</div>
-                            ${order.orderStatus !== 'Placed' ? `<div class="timeline-item">${order.orderStatus}</div>` : ''}
+                        <div style="margin: 15px 0;">
+                            ${order.items.map(i => `
+                                <div style="display:flex; align-items:center; margin-bottom:10px;">
+                                    <img src="${i.image}" style="width:40px; height:40px; object-fit:contain; margin-right:10px;">
+                                    <div>${i.name} (x${i.quantity}) - ₹${i.price * i.quantity}</div>
+                                </div>
+                            `).join('')}
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size:13px; color:#666; margin-bottom:10px;">
+                            Payment: ${order.paymentMethod} | Status: ${order.paymentStatus}
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item" style="color: ${order.orderStatus === 'Placed' ? '#2874f0' : '#878787'}">Placed - ${order.date}</div>
+                            ${order.orderStatus === 'Shipped' || order.orderStatus === 'Delivered' ? `<div class="timeline-item" style="color: ${order.orderStatus === 'Shipped' ? '#2874f0' : '#878787'}">Shipped</div>` : ''}
+                            ${order.orderStatus === 'Delivered' ? `<div class="timeline-item" style="color: #2874f0">Delivered</div>` : ''}
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
                             <strong>Total: ₹${order.total}</strong>
                             ${(order.paymentStatus === 'Verified' || order.paymentStatus === 'COD') ? 
                                 `<button class="btn btn-secondary" style="padding:4px 12px; font-size:12px;" onclick="alert('Downloading Invoice...')">Invoice</button>` : ''}
