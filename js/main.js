@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                             `).join('')}
                         </div>
-                        <div style="font-size:13px; color:#666; margin-bottom:10px;"> 
+                        <div style="font-size:13px; color:#666; margin-bottom:10px;">
                             Payment: ${order.paymentMethod} | Status: ${order.paymentStatus}
                         </div>
                         <div class="timeline">
