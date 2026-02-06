@@ -311,9 +311,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     paymentProofImage: null // Base64 would go here in a full app
                 };
 
-                const gj_orders = JSON.parse(localStorage.getItem('gj_gj_orders')) || [];
-                gj_orders.push(gj_orders);
-                localStorage.setItem('gj_gj_orders', JSON.stringify(gj_orders));
+                const allOrders = JSON.parse(localStorage.getItem("gj_orders")) || [];
+                allOrders.push(order);
+                localStorage.setItem("gj_orders", JSON.stringify(allOrders));
                 localStorage.removeItem('gj_cart');
                 localStorage.removeItem('gj_temp_checkout');
                 alert('Order Placed! Redirecting...');
@@ -323,55 +323,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (path.includes('gj_orders.html')) {
-        const user = JSON.parse(localStorage.getItem('gj_user'));
-        const gj_orders = JSON.parse(localStorage.getItem('gj_gj_orders')) || [];
-        const container = document.getElementById('gj_ordersList');
-        
-        if (container) {
-            if (!user) {
-                container.innerHTML = '<p>Please <a href="login.html" style="color:var(--primary-color); font-weight:600;">Login</a> to view your gj_orders.</p>';
-                return;
-            }
+    if (path.includes("orders.html")) {
+    const container = document.getElementById("ordersList");
+    if (!container) return;
 
-            const myOrders = gj_orders.filter(o => 
-                (o.customer?.email && o.customer.email === user.email) || 
-                (o.customer?.phone && o.customer.phone === user.phone)
-            );
+    const user = JSON.parse(localStorage.getItem("gj_user"));
+    const orders = JSON.parse(localStorage.getItem("gj_orders")) || [];
 
-            if (myOrders.length === 0) {
-                container.innerHTML = '<p>No gj_orders found for your account. <a href="products.html" style="color:var(--primary-color)">Start Shopping</a></p>';
-            } else {
-                container.innerHTML = myOrders.reverse().map(gj_orders => `
-                    <div clas="card" style="padding: 16px; margin-bottom: 16px;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <strong>${gj_orders.id}</strong>
-                            <span clas="status-tag status-${gj_orders.paymentStatus.toLowerCase()}">${gj_orders.paymentStatus}</span>
-                        </div>
-                        <div style="margin: 15px 0;">
-                            ${gj_orders.items.map(i => `
-                                <div style="display:flex; align-items:center; margin-bottom:10px;">
-                                    <img src="${i.image}" style="width:40px; height:40px; object-fit:contain; margin-right:10px;">
-                                    <div>${i.name} (x${i.quantity}) - ₹${i.price * i.quantity}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div style="font-size:13px; color:#666; margin-bottom:10px;">
-                            Payment: ${gj_orders.paymentMethod} | Status: ${gj_orders.paymentStatus}
-                        </div>
-                        <div clas="timeline">
-                            <div clas="timeline-item" style="color: ${gj_orders.gj_ordersStatus === 'Placed' ? '#2874f0' : '#878787'}">Placed - ${gj_orders.date}</div>
-                            ${gj_orders.gj_ordersStatus === 'Shipped' || gj_orders.gj_ordersStatus === 'Delivered' ? `<div clas="timeline-item" style="color: ${gj_orders.gj_ordersStatus === 'Shipped' ? '#2874f0' : '#878787'}">Shipped</div>` : ''}
-                            ${gj_orders.gj_ordersStatus === 'Delivered' ? `<div clas="timeline-item" style="color: #2874f0">Delivered</div>` : ''}
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-                            <strong>Total: ₹${gj_orders.total}</strong>
-                            ${(gj_orders.paymentStatus === 'Verified' || gj_orders.paymentStatus === 'COD') ? 
-                                `<button clas="btn btn-secondary" style="padding:4px 12px; font-size:12px;" onclick="alert('Downloading Invoice...')">Invoice</button>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
+    console.log("Logged User:", user);
+    console.log("All Orders:", orders);
+
+    if (!user) {
+        container.innerHTML = "<p>Please login to view your orders.</p>";
+        return;
     }
+
+    const myOrders = orders.filter(o =>
+        (o.customer && o.customer.email && o.customer.email === user.email) ||
+        (o.customer && o.customer.phone && o.customer.phone === user.phone)
+    );
+
+    if (myOrders.length === 0) {
+        container.innerHTML = "<p>No orders found for your account.</p>";
+        return;
+    }
+
+    container.innerHTML = myOrders.reverse().map(order => `
+        <div class="card" style="margin-bottom:16px;padding:16px;">
+            <strong>Order ID:</strong> ${order.id}<br>
+            <small>${order.date}</small><br><br>
+
+            ${order.items.map(item => `
+                <div style="display:flex;gap:10px;margin-bottom:8px;">
+                    <img src="${item.image}" style="width:50px;height:50px;border-radius:4px;">
+                    <div>
+                        ${item.name} × ${item.quantity}<br>
+                        ₹${item.price}
+                    </div>
+                </div>
+            `).join("")}
+
+            <hr>
+            <strong>Payment:</strong> ${order.paymentStatus}<br>
+            <strong>Status:</strong> ${order.orderStatus}<br>
+            <strong>Total:</strong> ₹${order.total}
+        </div>
+    `).join("");
+}
 });
