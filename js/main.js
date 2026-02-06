@@ -242,13 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const loggedUser = JSON.parse(localStorage.getItem('gj_user'));
-                const inputEmail = document.getElementById('c_email').value;
 
                 const customer = {
                     name: document.getElementById('c_name').value,
                     phone: document.getElementById('c_phone').value,
                     address: document.getElementById('c_address').value,
-                    email: loggedUser?.email || inputEmail || ''
+                    email: loggedUser?.email || ""
                 };
                 localStorage.setItem('gj_temp_checkout', JSON.stringify({ customer, items: cart, total }));
                 window.location.href = 'payment.html';
@@ -308,12 +307,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     paymentStatus: method === 'COD' ? 'COD' : 'Pending',
                     orderStatus: 'Placed',
                     paymentRef: method === 'UPI' ? upiRefInput.value : null,
-                    paymentProofImage: null // Base64 would go here in a full app
+                    paymentProofImage: null
                 };
 
-                const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
-                orders.push(order);
-                localStorage.setItem('gj_orders', JSON.stringify(orders));
+                const allOrders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+                allOrders.push(order);
+                localStorage.setItem('gj_orders', JSON.stringify(allOrders));
                 localStorage.removeItem('gj_cart');
                 localStorage.removeItem('gj_temp_checkout');
                 alert('Order Placed! Redirecting...');
