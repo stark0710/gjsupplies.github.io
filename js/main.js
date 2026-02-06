@@ -322,55 +322,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (path.includes('orders.html')) {
-        const user = JSON.parse(localStorage.getItem('gj_user'));
-        const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
-        const container = document.getElementById('ordersList');
-        
-        if (container) {
-            if (!user) {
-                container.innerHTML = '<p>Please <a href="login.html" style="color:var(--primary-color); font-weight:600;">Login</a> to view your orders.</p>';
-                return;
-            }
+    if (path.includes("orders.html")) {
+        const container = document.getElementById("ordersList");
+        if (!container) return;
 
-            const myOrders = orders.filter(o => 
-                (o.customer?.email && o.customer.email === user.email) || 
-                (o.customer?.phone && o.customer.phone === user.phone)
-            );
+        const user = JSON.parse(localStorage.getItem("gj_user"));
+        let orders = JSON.parse(localStorage.getItem("gj_orders")) || [];
 
-            if (myOrders.length === 0) {
-                container.innerHTML = '<p>No orders found for your account. <a href="products.html" style="color:var(--primary-color)">Start Shopping</a></p>';
-            } else {
-                container.innerHTML = myOrders.reverse().map(order => `
-                    <div class="card" style="padding: 16px; margin-bottom: 16px;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <strong>${order.id}</strong>
-                            <span class="status-tag status-${order.paymentStatus.toLowerCase()}">${order.paymentStatus}</span>
-                        </div>
-                        <div style="margin: 15px 0;">
-                            ${order.items.map(i => `
-                                <div style="display:flex; align-items:center; margin-bottom:10px;">
-                                    <img src="${i.image}" style="width:40px; height:40px; object-fit:contain; margin-right:10px;">
-                                    <div>${i.name} (x${i.quantity}) - ₹${i.price * i.quantity}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div style="font-size:13px; color:#666; margin-bottom:10px;">
-                            Payment: ${order.paymentMethod} | Status: ${order.paymentStatus}
-                        </div>
-                        <div class="timeline">
-                            <div class="timeline-item" style="color: ${order.orderStatus === 'Placed' ? '#2874f0' : '#878787'}">Placed - ${order.date}</div>
-                            ${order.orderStatus === 'Shipped' || order.orderStatus === 'Delivered' ? `<div class="timeline-item" style="color: ${order.orderStatus === 'Shipped' ? '#2874f0' : '#878787'}">Shipped</div>` : ''}
-                            ${order.orderStatus === 'Delivered' ? `<div class="timeline-item" style="color: #2874f0">Delivered</div>` : ''}
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-                            <strong>Total: ₹${order.total}</strong>
-                            ${(order.paymentStatus === 'Verified' || order.paymentStatus === 'COD') ? 
-                                `<button class="btn btn-secondary" style="padding:4px 12px; font-size:12px;" onclick="alert('Downloading Invoice...')">Invoice</button>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            }
+        console.log("USER:", user);
+        console.log("ORDERS BEFORE FIX:", orders);
+
+        if (!user) {
+            container.innerHTML = "<p>Please login to view your orders.</p>";
+            return;
         }
+
+        // FORCE-LINK ORDERS TO USER IF MISSING
+        let updated = false;
+        orders = orders.map(o => {
+            if (!o.customer) o.customer = {};
+            if (!o.customer.email) {
+                o.customer.email = user.email;
+                updated = true;
+            }
+            return o;
+        });
+
+        if (updated) {
+            localStorage.setItem("gj_orders", JSON.stringify(orders));
+        }
+
+        const myOrders = orders.filter(o =>
+            o.customer.email === user.email
+        );
+
+        console.log("MY ORDERS:", myOrders);
+
+        if (myOrders.length === 0) {
+            container.innerHTML = "<p>No orders found for your account.</p>";
+            return;
+        }
+
+        container.innerHTML = myOrders.reverse().map(order => `
+            <div class="card" style="padding:16px;margin-bottom:16px;">
+              <strong>Order ID:</strong> ${order.id}<br>
+              <small>${order.date}</small><br><br>
+
+              ${order.items.map(item => `
+                <div style="display:flex;gap:10px;margin-bottom:8px;">
+                  <img src="${item.image}" style="width:50px;height:50px;">
+                  <div>
+                    ${item.name} × ${item.quantity}<br>
+                    ₹${item.price}
+                  </div>
+                </div>
+              `).join("")}
+
+              <hr>
+              <strong>Payment:</strong> ${order.paymentStatus}<br>
+              <strong>Status:</strong> ${order.orderStatus}<br>
+              <strong>Total:</strong> ₹${order.total}
+            </div>
+        `).join("");
     }
 });
