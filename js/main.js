@@ -5,7 +5,7 @@ const PRODUCTS = [
         name: "Premium Storage Box Set (30L)",
         category: "Storage",
         price: 899,
-        image: "asets/images/cat-storage.jpg",
+        image: "assets/images/cat-storage.jpg",
         description: "Heavy duty plastic storage boxes with lids. Perfect for organizing clothes, toys, and household items. Stackable design saves space."
     },
     {
@@ -13,7 +13,7 @@ const PRODUCTS = [
         name: "Ceramic Dinner Set (12 Pcs)",
         category: "Kitchen",
         price: 2499,
-        image: "asets/images/cat-kitchen.jpg",
+        image: "assets/images/cat-kitchen.jpg",
         description: "Elegant white ceramic dinner set including 4 plates, 4 bowls, and 4 mugs. Microwave and dishwasher safe."
     },
     {
@@ -21,7 +21,7 @@ const PRODUCTS = [
         name: "Smart Air Humidifier",
         category: "Electronics",
         price: 1299,
-        image: "asets/images/cat-electronics.jpg",
+        image: "assets/images/cat-electronics.jpg",
         description: "Ultrasonic cool mist humidifier with adjustable mist levels. Quiet operation, perfect for bedroom or office."
     },
     {
@@ -29,23 +29,23 @@ const PRODUCTS = [
         name: "All-Purpose Cleaning Kit",
         category: "Cleaning",
         price: 499,
-        image: "asets/images/cat-cleaning.jpg",
-        description: "Complete home cleaning set including microfiber cloths, sponges, and spray bottles. Esential for every home."
+        image: "assets/images/cat-cleaning.jpg",
+        description: "Complete home cleaning set including microfiber cloths, sponges, and spray bottles. Essential for every home."
     },
     {
         id: 5,
         name: "Stackable Shoe Rack",
         category: "Storage",
         price: 699,
-        image: "asets/images/cat-storage.jpg",
-        description: "4-tier shoe rack organizer. Easy to asemble, durable metal construction. Holds up to 12 pairs of shoes."
+        image: "assets/images/cat-storage.jpg",
+        description: "4-tier shoe rack organizer. Easy to assemble, durable metal construction. Holds up to 12 pairs of shoes."
     },
     {
         id: 6,
         name: "Non-Stick Cookware Set",
         category: "Kitchen",
         price: 3499,
-        image: "asets/images/cat-kitchen.jpg",
+        image: "assets/images/cat-kitchen.jpg",
         description: "3-piece non-stick frying pan and pot set. Induction base, ergonomic handles. PFOA free."
     }
 ];
@@ -66,7 +66,7 @@ const App = {
                     this.filterProducts(e.target.value);
                 }
             });
-            searchInput.addEventListener('keypres', (e) => {
+            searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     window.location.href = `products.html?search=${e.target.value}`;
                 }
@@ -113,21 +113,21 @@ const App = {
             items = items.filter(p => p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term));
         }
         container.innerHTML = items.map(product => `
-            <div clas="product-card">
-                <button clas="like-btn" onclick="App.toggleLike(${product.id}, this)">♥</button>
+            <div class="product-card">
+                <button class="like-btn" onclick="App.toggleLike(${product.id}, this)">♥</button>
                 <a href="product.html?id=${product.id}">
                     <img src="${product.image}" alt="${product.name}">
-                    <div clas="product-info">
+                    <div class="product-info">
                         <h3>${product.name}</h3>
-                        <div clas="product-price">₹${product.price}</div>
+                        <div class="product-price">₹${product.price}</div>
                     </div>
                 </a>
-                <button clas="btn btn-primary" style="width: 100%" onclick="App.addToCart(${product.id})">Add to Cart</button>
+                <button class="btn btn-primary" style="width: 100%" onclick="App.addToCart(${product.id})">Add to Cart</button>
             </div>
         `).join('');
     },
 
-    toggleLike(id, btn) { btn.clasList.toggle('active'); },
+    toggleLike(id, btn) { btn.classList.toggle('active'); },
 
     renderCart() {
         const container = document.getElementById('cartItems');
@@ -136,22 +136,22 @@ const App = {
         if (!container) return;
         const cart = JSON.parse(localStorage.getItem('gj_cart')) || [];
         if (cart.length === 0) {
-            container.innerHTML = '<div clas="p-4 text-center">Your cart is empty. <a href="products.html" style="color:var(--primary-color)">Start Shopping</a></div>';
+            container.innerHTML = '<div class="p-4 text-center">Your cart is empty. <a href="products.html" style="color:var(--primary-color)">Start Shopping</a></div>';
             if(totalEl) totalEl.textContent = '₹0';
             if(finalEl) finalEl.textContent = '₹0';
             return;
         }
         container.innerHTML = cart.map(item => `
-            <div clas="cart-item">
-                <img src="${item.image}" clas="cart-item-img" alt="${item.name}">
-                <div clas="cart-item-details">
+            <div class="cart-item">
+                <img src="${item.image}" class="cart-item-img" alt="${item.name}">
+                <div class="cart-item-details">
                     <h3>${item.name}</h3>
-                    <div clas="product-price">₹${item.price}</div>
-                    <div clas="qty-controls">
-                        <button clas="qty-btn" onclick="App.updateQty(${item.id}, -1)">-</button>
+                    <div class="product-price">₹${item.price}</div>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="App.updateQty(${item.id}, -1)">-</button>
                         <span>${item.quantity}</span>
-                        <button clas="qty-btn" onclick="App.updateQty(${item.id}, 1)">+</button>
-                        <button clas="btn btn-secondary" style="margin-left:auto; padding: 4px 12px; font-size: 12px" onclick="App.removeFromCart(${item.id})">Remove</button>
+                        <button class="qty-btn" onclick="App.updateQty(${item.id}, 1)">+</button>
+                        <button class="btn btn-secondary" style="margin-left:auto; padding: 4px 12px; font-size: 12px" onclick="App.removeFromCart(${item.id})">Remove</button>
                     </div>
                 </div>
             </div>
@@ -193,12 +193,12 @@ const App = {
         }
 
         container.innerHTML = related.map(product => `
-            <div clas="product-card">
+            <div class="product-card">
                 <a href="product.html?id=${product.id}">
                     <img src="${product.image}" alt="${product.name}">
-                    <div clas="product-info">
+                    <div class="product-info">
                         <h3>${product.name}</h3>
-                        <div clas="product-price">₹${product.price}</div>
+                        <div class="product-price">₹${product.price}</div>
                     </div>
                 </a>
             </div>
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const customer = {
                     name: document.getElementById('c_name').value,
                     phone: document.getElementById('c_phone').value,
-                    addres: document.getElementById('c_addres').value,
+                    address: document.getElementById('c_address').value,
                     email: loggedUser?.email || inputEmail || ''
                 };
                 localStorage.setItem('gj_temp_checkout', JSON.stringify({ customer, items: cart, total }));
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                const gj_orders = {
+                const order = {
                     id: 'ORD' + Date.now(),
                     date: new Date().toLocaleDateString(),
                     items: temp.items,
@@ -306,68 +306,72 @@ document.addEventListener('DOMContentLoaded', () => {
                     customer: temp.customer,
                     paymentMethod: method,
                     paymentStatus: method === 'COD' ? 'COD' : 'Pending',
-                    gj_ordersStatus: 'Placed',
+                    orderStatus: 'Placed',
                     paymentRef: method === 'UPI' ? upiRefInput.value : null,
                     paymentProofImage: null // Base64 would go here in a full app
                 };
 
-                const allOrders = JSON.parse(localStorage.getItem("gj_orders")) || [];
-                allOrders.push(order);
-                localStorage.setItem("gj_orders", JSON.stringify(allOrders));
+                const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+                orders.push(order);
+                localStorage.setItem('gj_orders', JSON.stringify(orders));
                 localStorage.removeItem('gj_cart');
                 localStorage.removeItem('gj_temp_checkout');
                 alert('Order Placed! Redirecting...');
-                window.location.href = 'gj_orders.html';
+                window.location.href = 'orders.html';
             });
             validatePayment(); // Initial check
         }
     }
 
-    if (path.includes("orders.html")) {
-    const container = document.getElementById("ordersList");
-    if (!container) return;
+    if (path.includes('orders.html')) {
+        const user = JSON.parse(localStorage.getItem('gj_user'));
+        const orders = JSON.parse(localStorage.getItem('gj_orders')) || [];
+        const container = document.getElementById('ordersList');
+        
+        if (container) {
+            if (!user) {
+                container.innerHTML = '<p>Please <a href="login.html" style="color:var(--primary-color); font-weight:600;">Login</a> to view your orders.</p>';
+                return;
+            }
 
-    const user = JSON.parse(localStorage.getItem("gj_user"));
-    const orders = JSON.parse(localStorage.getItem("gj_orders")) || [];
+            const myOrders = orders.filter(o => 
+                (o.customer?.email && o.customer.email === user.email) || 
+                (o.customer?.phone && o.customer.phone === user.phone)
+            );
 
-    console.log("Logged User:", user);
-    console.log("All Orders:", orders);
-
-    if (!user) {
-        container.innerHTML = "<p>Please login to view your orders.</p>";
-        return;
-    }
-
-    const myOrders = orders.filter(o =>
-        (o.customer && o.customer.email && o.customer.email === user.email) ||
-        (o.customer && o.customer.phone && o.customer.phone === user.phone)
-    );
-
-    if (myOrders.length === 0) {
-        container.innerHTML = "<p>No orders found for your account.</p>";
-        return;
-    }
-
-    container.innerHTML = myOrders.reverse().map(order => `
-        <div class="card" style="margin-bottom:16px;padding:16px;">
-            <strong>Order ID:</strong> ${order.id}<br>
-            <small>${order.date}</small><br><br>
-
-            ${order.items.map(item => `
-                <div style="display:flex;gap:10px;margin-bottom:8px;">
-                    <img src="${item.image}" style="width:50px;height:50px;border-radius:4px;">
-                    <div>
-                        ${item.name} × ${item.quantity}<br>
-                        ₹${item.price}
+            if (myOrders.length === 0) {
+                container.innerHTML = '<p>No orders found for your account. <a href="products.html" style="color:var(--primary-color)">Start Shopping</a></p>';
+            } else {
+                container.innerHTML = myOrders.reverse().map(order => `
+                    <div class="card" style="padding: 16px; margin-bottom: 16px;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>${order.id}</strong>
+                            <span class="status-tag status-${order.paymentStatus.toLowerCase()}">${order.paymentStatus}</span>
+                        </div>
+                        <div style="margin: 15px 0;">
+                            ${order.items.map(i => `
+                                <div style="display:flex; align-items:center; margin-bottom:10px;">
+                                    <img src="${i.image}" style="width:40px; height:40px; object-fit:contain; margin-right:10px;">
+                                    <div>${i.name} (x${i.quantity}) - ₹${i.price * i.quantity}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="font-size:13px; color:#666; margin-bottom:10px;">
+                            Payment: ${order.paymentMethod} | Status: ${order.paymentStatus}
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item" style="color: ${order.orderStatus === 'Placed' ? '#2874f0' : '#878787'}">Placed - ${order.date}</div>
+                            ${order.orderStatus === 'Shipped' || order.orderStatus === 'Delivered' ? `<div class="timeline-item" style="color: ${order.orderStatus === 'Shipped' ? '#2874f0' : '#878787'}">Shipped</div>` : ''}
+                            ${order.orderStatus === 'Delivered' ? `<div class="timeline-item" style="color: #2874f0">Delivered</div>` : ''}
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                            <strong>Total: ₹${order.total}</strong>
+                            ${(order.paymentStatus === 'Verified' || order.paymentStatus === 'COD') ? 
+                                `<button class="btn btn-secondary" style="padding:4px 12px; font-size:12px;" onclick="alert('Downloading Invoice...')">Invoice</button>` : ''}
+                        </div>
                     </div>
-                </div>
-            `).join("")}
-
-            <hr>
-            <strong>Payment:</strong> ${order.paymentStatus}<br>
-            <strong>Status:</strong> ${order.orderStatus}<br>
-            <strong>Total:</strong> ₹${order.total}
-        </div>
-    `).join("");
-}
+                `).join('');
+            }
+        }
+    }
 });
