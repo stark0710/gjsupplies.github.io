@@ -212,6 +212,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
     const searchParams = new URLSearchParams(window.location.search);
 
+    if (path.includes("product.html")) {
+        const buyNowBtn = document.getElementById("buyNowBtn");
+        if (buyNowBtn) {
+            buyNowBtn.addEventListener("click", () => {
+                const productId = new URLSearchParams(window.location.search).get("id");
+                if (!productId) return;
+
+                App.addToCart(parseInt(productId));
+                window.location.href = "cart.html";
+            });
+        }
+    }
+
     if (path.includes('products.html')) {
         const query = searchParams.get('search');
         App.renderProducts('productsGrid', query);
