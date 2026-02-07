@@ -3,51 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | GJ Supplies</title>
+    <title>Checkout | GJ Supplies</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body style="background-color: #2874f0;">
-    <div class="container" style="display: flex; justify-content: center; padding-top: 80px;">
-        <div class="card" style="display: flex; width: 700px; height: 400px; background: white; overflow: hidden;">
-            
-            <div style="background-color: #2874f0; color: white; padding: 40px 30px; width: 40%; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <h2 style="font-size: 28px; font-weight: 500; margin-bottom: 16px;">Login</h2>
-                    <p style="font-size: 16px; color: #dbdbdb; line-height: 1.5;">Get access to your Orders, Wishlist and Recommendations</p>
-                </div>
-                <img src="assets/images/cat-electronics.jpg" style="opacity: 0.5; mix-blend-mode: multiply;">
-            </div>
+<body>
+    <header class="main-header">
+        <div class="container header-content">
+            <a href="index.html" class="logo">GJ <span>Supplies</span></a>
+            <nav class="nav-links">
+                <span style="color: white; font-weight: 500;">Secure Checkout</span>
+            </nav>
+        </div>
+    </header>
 
-            <div style="padding: 40px 30px; width: 60%; display: flex; flex-direction: column;">
-                <form id="loginForm">
+    <main class="container">
+        <div class="cart-container">
+            <div class="auth-form" style="margin: 0; max-width: 100%;">
+                <h2 class="section-title">Delivery Address</h2>
+                <form id="checkoutForm">
                     <div class="form-group">
-                        <input type="email" id="email" placeholder="Enter Email" required style="border: none; border-bottom: 1px solid #e0e0e0; padding: 10px 0;">
+                        <label>Full Name</label>
+                        <input type="text" id="c_name" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="password" placeholder="Enter Password" required style="border: none; border-bottom: 1px solid #e0e0e0; padding: 10px 0;">
+                        <label>Phone Number</label>
+                        <input type="tel" id="c_phone" required pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label>Email (Optional)</label>
+                        <input type="email" id="c_email">
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="c_address" rows="3" required></textarea>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary" style="width: 100%; background-color: #fb641b; margin-top: 20px;">Login</button>
-                    
-                    <div class="text-center" style="margin-top: 20px;">
-                        <a href="signup.html" style="color: #2874f0; font-weight: 500;">New to GJ Supplies? Create an account</a>
-                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">CONFIRM & ORDER</button>
                 </form>
             </div>
-        </div>
-    </div>
 
+            <div class="price-details">
+                <h3 style="color: #878787; margin-bottom: 16px;">Order Summary</h3>
+                <div class="price-row total" style="border: none;">
+                    <span>Total Payable</span>
+                    <span id="checkoutTotal">₹0</span>
+                </div>
+                <div style="margin-top: 16px; font-size: 12px; color: #666;">
+                    By placing the order, you agree to GJ Supplies' Terms of Use and Privacy Policy.
+                </div>
+            </div>
+        </div>
+    </main>
     <script type="module" src="js/firebase.js"></script>
     <script type="module" src="js/main.js"></script>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            // Simple mock auth
-            const user = { name: 'Test User', email: email };
-            localStorage.setItem('gj_user', JSON.stringify(user));
-            window.location.href = 'index.html';
-        });
-    </script>
 </body>
 </html>
